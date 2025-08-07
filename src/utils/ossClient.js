@@ -7,7 +7,7 @@ import OSS from 'ali-oss'
 
 // OSS 配置
 const OSS_CONFIG = {
-  region: import.meta.env.VITE_OSS_REGION || 'oss-cn-hangzhou',
+  region: import.meta.env.VITE_OSS_REGION || 'oss-cn-shanghai',
   accessKeyId: import.meta.env.VITE_OSS_ACCESS_KEY_ID,
   accessKeySecret: import.meta.env.VITE_OSS_ACCESS_KEY_SECRET,
   bucket: import.meta.env.VITE_OSS_BUCKET || 'reface'
