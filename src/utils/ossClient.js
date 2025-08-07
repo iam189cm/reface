@@ -1,35 +1,13 @@
 /**
  * 阿里云 OSS 客户端工具
  * 处理图片上传、存储和 CDN 加速
+ * 使用安全的服务端代理模式，前端不直接持有AccessKey
  */
 
-import OSS from 'ali-oss'
+// 前端不再需要直接的OSS配置，所有操作通过API进行
+// OSS 配置移至服务端 (/api/upload-oss.js)
 
-// OSS 配置
-const OSS_CONFIG = {
-  region: import.meta.env.VITE_OSS_REGION || 'oss-cn-shanghai',
-  accessKeyId: import.meta.env.VITE_OSS_ACCESS_KEY_ID,
-  accessKeySecret: import.meta.env.VITE_OSS_ACCESS_KEY_SECRET,
-  bucket: import.meta.env.VITE_OSS_BUCKET || 'reface'
-}
-
-// 创建 OSS 客户端实例
-let ossClient = null
-
-const initOSSClient = () => {
-  if (!OSS_CONFIG.accessKeyId || !OSS_CONFIG.accessKeySecret) {
-    console.warn('OSS 配置不完整，将使用本地存储')
-    return null
-  }
-
-  try {
-    ossClient = new OSS(OSS_CONFIG)
-    return ossClient
-  } catch (error) {
-    console.error('OSS 客户端初始化失败:', error)
-    return null
-  }
-}
+console.log('✅ OSS客户端：使用安全的服务端代理模式')
 
 /**
  * 生成唯一的文件名
@@ -129,43 +107,29 @@ export const uploadToOSS = async (file, folder = 'original', originalName = 'ima
 }
 
 /**
- * 删除 OSS 中的文件
+ * 删除 OSS 中的文件（通过服务端API）
  * @param {string} key - 文件 key
  * @returns {Promise<boolean>} 删除是否成功
  */
 export const deleteFromOSS = async (key) => {
-  const client = ossClient || initOSSClient()
-  
-  if (!client || !key) {
-    return false
-  }
-
-  try {
-    await client.delete(key)
-    return true
-  } catch (error) {
-    console.error('OSS 删除失败:', error)
-    return false
-  }
+  console.log('删除功能需要通过服务端API实现以确保安全')
+  // TODO: 实现服务端删除API /api/delete-oss
+  return false
 }
 
 /**
- * 获取文件的 CDN URL（带参数处理）
- * @param {string} key - 文件 key
+ * 获取文件的 CDN URL（从服务端API响应中获取）
+ * @param {string} publicUrl - 服务端返回的公共URL
  * @param {Object} options - 处理参数
  * @returns {string} CDN URL
  */
-export const getCDNUrl = (key, options = {}) => {
-  const client = ossClient || initOSSClient()
-  
-  if (!client || !key) {
+export const getCDNUrl = (publicUrl, options = {}) => {
+  if (!publicUrl) {
     return ''
   }
 
   try {
-    const baseUrl = `https://${OSS_CONFIG.bucket}.${OSS_CONFIG.region}.aliyuncs.com/${key}`
-    
-    // 添加图片处理参数
+    // 添加图片处理参数到已有的URL
     const params = []
     if (options.width) params.push(`w_${options.width}`)
     if (options.height) params.push(`h_${options.height}`)
@@ -173,31 +137,35 @@ export const getCDNUrl = (key, options = {}) => {
     if (options.format) params.push(`f_${options.format}`)
     
     if (params.length > 0) {
-      return `${baseUrl}?x-oss-process=image/resize,${params.join(',')}`
+      const separator = publicUrl.includes('?') ? '&' : '?'
+      return `${publicUrl}${separator}x-oss-process=image/resize,${params.join(',')}`
     }
     
-    return baseUrl
+    return publicUrl
   } catch (error) {
     console.error('生成 CDN URL 失败:', error)
-    return ''
+    return publicUrl || ''
   }
 }
 
 /**
- * 检查 OSS 连接状态
+ * 检查 OSS 连接状态（通过服务端API测试）
  * @returns {Promise<boolean>} 连接是否正常
  */
 export const checkOSSConnection = async () => {
-  const client = ossClient || initOSSClient()
-  
-  if (!client) {
-    return false
-  }
-
   try {
-    // 尝试列出 bucket 信息
-    await client.getBucketInfo()
-    return true
+    // 通过测试上传API来检查连接
+    const response = await fetch('/api/upload-oss', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: 'connection-test.jpg',
+        folder: 'test',
+        contentType: 'image/jpeg'
+      })
+    })
+    
+    return response.ok
   } catch (error) {
     console.error('OSS 连接检查失败:', error)
     return false
@@ -256,8 +224,7 @@ export const compressAndUpload = async (file, options = {}) => {
   })
 }
 
-// 初始化 OSS 客户端
-initOSSClient()
+// 前端不再需要直接初始化OSS客户端，所有操作通过服务端API进行
 
 export default {
   uploadToOSS,
