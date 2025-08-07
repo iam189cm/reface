@@ -218,24 +218,55 @@ export default {
     }))
 
     onMounted(() => {
+      console.log('编辑页面已挂载')
+      
       // 从 sessionStorage 获取图片数据
       const storedImageData = sessionStorage.getItem('selectedImage')
+      console.log('从 sessionStorage 获取的数据:', storedImageData)
+      
       if (storedImageData) {
-        imageData.value = JSON.parse(storedImageData)
-        loadImageToCanvas()
+        try {
+          imageData.value = JSON.parse(storedImageData)
+          console.log('解析后的图片数据:', imageData.value)
+          loadImageToCanvas()
+        } catch (error) {
+          console.error('解析图片数据失败:', error)
+          showNotification('图片数据解析失败', 'error')
+        }
+      } else {
+        console.error('没有找到图片数据')
+        showNotification('没有找到图片数据，请重新上传', 'error')
       }
       
       // 获取原始文件（用于 AI 处理）
       if (window.originalImageFile) {
         originalImageFile.value = window.originalImageFile
+        console.log('原始文件已获取:', originalImageFile.value)
+      } else {
+        console.warn('没有找到原始文件')
       }
     })
 
     const loadImageToCanvas = () => {
-      if (!imageData.value || !canvas.value) return
+      if (!imageData.value) {
+        console.error('没有图片数据')
+        return
+      }
+      
+      if (!canvas.value) {
+        console.error('Canvas 元素不存在，延迟加载')
+        // 延迟执行，等待 DOM 渲染完成
+        setTimeout(() => {
+          loadImageToCanvas()
+        }, 100)
+        return
+      }
 
+      console.log('开始加载图片:', imageData.value)
+      
       const img = new Image()
       img.onload = () => {
+        console.log('图片加载成功:', img.width, 'x', img.height)
         originalImage.value = img
         const ctx = canvas.value.getContext('2d')
         
@@ -258,8 +289,25 @@ export default {
         
         // 绘制原始图片
         ctx.drawImage(img, 0, 0, width, height)
+        console.log('图片已绘制到 Canvas')
       }
-      img.src = imageData.value.url
+      
+      img.onerror = (error) => {
+        console.error('图片加载失败:', error, imageData.value.url)
+        showNotification('图片加载失败', 'error')
+      }
+      
+      // 设置图片源
+      if (imageData.value.ossUrl) {
+        console.log('使用 OSS URL:', imageData.value.ossUrl)
+        img.src = imageData.value.ossUrl
+      } else if (imageData.value.url) {
+        console.log('使用本地 URL:', imageData.value.url)
+        img.src = imageData.value.url
+      } else {
+        console.error('没有可用的图片 URL')
+        showNotification('图片 URL 不存在', 'error')
+      }
     }
 
     const applyAdjustments = () => {

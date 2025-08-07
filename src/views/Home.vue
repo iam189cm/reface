@@ -225,18 +225,30 @@ export default {
     }
 
     const startEditing = () => {
+      if (!selectedImage.value) {
+        showNotification('请先选择图片', 'error')
+        return
+      }
+
+      console.log('开始编辑，图片数据:', selectedImage.value)
+      
       // 将图片信息存储到 sessionStorage 以便在编辑页面使用
-      sessionStorage.setItem('selectedImage', JSON.stringify({
+      const imageDataToStore = {
         url: selectedImage.value.url,
         name: selectedImage.value.name,
         size: selectedImage.value.size,
-        type: selectedImage.value.type
-      }))
+        type: selectedImage.value.type,
+        ossUrl: selectedImage.value.ossUrl || null,
+        ossKey: selectedImage.value.ossKey || null
+      }
+      
+      console.log('存储到 sessionStorage 的数据:', imageDataToStore)
+      sessionStorage.setItem('selectedImage', JSON.stringify(imageDataToStore))
       
       // 将原始文件也存储起来（用于 AI 处理）
-      // 注意：File 对象不能直接 JSON 序列化，所以我们需要特殊处理
       if (selectedImage.value.file) {
         window.originalImageFile = selectedImage.value.file
+        console.log('原始文件已存储到 window.originalImageFile')
       }
       
       router.push('/editor')
