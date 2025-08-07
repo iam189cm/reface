@@ -45,44 +45,54 @@ const generateFileName = (originalName, prefix = '') => {
 }
 
 /**
- * 上传图片到 OSS
+ * 上传图片到 OSS（通过服务端 API）
  * @param {File|Blob} file - 图片文件
  * @param {string} folder - 存储文件夹 (original/processed)
  * @param {string} originalName - 原始文件名
  * @returns {Promise<Object>} 上传结果
  */
 export const uploadToOSS = async (file, folder = 'original', originalName = 'image.jpg') => {
-  const client = ossClient || initOSSClient()
-  
-  if (!client) {
-    // OSS 不可用时，返回本地 URL
-    return {
-      success: false,
-      url: URL.createObjectURL(file),
-      key: null,
-      size: file.size,
-      isLocal: true
-    }
-  }
-
   try {
-    const fileName = generateFileName(originalName, `${folder}/`)
-    
-    // 上传文件
-    const result = await client.put(fileName, file, {
+    // 第一步：获取预签名 URL
+    const response = await fetch('/api/upload-oss', {
+      method: 'POST',
       headers: {
-        'Content-Type': file.type || 'image/jpeg',
-        'Cache-Control': 'public, max-age=31536000' // 缓存1年
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        filename: originalName,
+        folder: folder,
+        contentType: file.type || 'image/jpeg'
+      })
+    })
+
+    const data = await response.json()
+
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to get upload URL')
+    }
+
+    // 第二步：直接上传到 OSS
+    const uploadResponse = await fetch(data.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type || 'image/jpeg'
       }
     })
 
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed: ${uploadResponse.status}`)
+    }
+
     return {
       success: true,
-      url: result.url,
-      key: fileName,
+      url: data.publicUrl,
+      key: data.key,
       size: file.size,
       isLocal: false
     }
+
   } catch (error) {
     console.error('OSS 上传失败:', error)
     
