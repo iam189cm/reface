@@ -193,8 +193,12 @@ export default {
         const compressedImage = await compressImage(props.imageFile, 800, 0.8)
 
         // 调用 Remove.bg API
-        const currentApiKey = apiKey.value || process.env.VITE_REMOVE_BG_API_KEY
+        const currentApiKey = apiKey.value || import.meta.env.VITE_REMOVE_BG_API_KEY
         const resultBlob = await removeBackground(compressedImage, currentApiKey)
+
+        // 上传处理后的图片到 OSS
+        const { uploadToOSS } = await import('../utils/ossClient.js')
+        const uploadResult = await uploadToOSS(resultBlob, 'processed', `bg_removed_${props.imageFile.name}`)
 
         // 使用试用次数
         if (!apiKey.value) {
@@ -206,6 +210,8 @@ export default {
         emit('result', {
           originalFile: props.imageFile,
           processedBlob: resultBlob,
+          ossUrl: uploadResult.success ? uploadResult.url : null,
+          ossKey: uploadResult.success ? uploadResult.key : null,
           type: 'background-removal'
         })
 

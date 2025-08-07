@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ali-oss": "^6.23.0",
     "vue": "^3.4.0",
     "vue-router": "^4.2.5"
   },

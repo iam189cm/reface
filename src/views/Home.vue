@@ -22,14 +22,15 @@
         @dragleave="isDragging = false"
       >
         <div class="flex flex-col items-center space-y-4">
-          <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center relative">
+            <div v-if="isUploading" class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <svg v-else class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </div>
           <div>
             <p class="text-lg font-semibold text-gray-700 mb-2">
-              点击上传或拖拽图片到这里
+              {{ isUploading ? '正在上传...' : '点击上传或拖拽图片到这里' }}
             </p>
             <p class="text-sm text-gray-500">
               支持 JPG、PNG、WebP 格式，最大 10MB
@@ -144,6 +145,7 @@ export default {
     const fileInput = ref(null)
     const selectedImage = ref(null)
     const isDragging = ref(false)
+    const isUploading = ref(false)
 
     const triggerFileInput = () => {
       fileInput.value.click()
@@ -164,28 +166,54 @@ export default {
       }
     }
 
-    const processFile = (file) => {
+    const processFile = async (file) => {
       if (!file.type.startsWith('image/')) {
-        alert('请选择图片文件')
+        showNotification('请选择图片文件', 'error')
         return
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        alert('文件大小不能超过10MB')
+        showNotification('文件大小不能超过10MB', 'error')
         return
       }
 
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        selectedImage.value = {
-          file,
-          url: e.target.result,
-          name: file.name,
-          size: file.size,
-          type: file.type
+      try {
+        // 显示加载状态
+        isUploading.value = true
+        
+        // 本地预览
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          selectedImage.value = {
+            file,
+            url: e.target.result,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            ossUrl: null,
+            ossKey: null
+          }
         }
+        reader.readAsDataURL(file)
+
+        // 上传到 OSS（后台进行）
+        const { uploadToOSS } = await import('../utils/ossClient.js')
+        const uploadResult = await uploadToOSS(file, 'original', file.name)
+        
+        if (selectedImage.value && uploadResult.success) {
+          selectedImage.value.ossUrl = uploadResult.url
+          selectedImage.value.ossKey = uploadResult.key
+          showNotification('图片上传成功', 'success')
+        } else if (uploadResult.isLocal) {
+          console.log('使用本地存储模式')
+        }
+        
+      } catch (error) {
+        console.error('处理图片失败:', error)
+        showNotification('图片处理失败', 'error')
+      } finally {
+        isUploading.value = false
       }
-      reader.readAsDataURL(file)
     }
 
     const formatFileSize = (bytes) => {
@@ -221,10 +249,25 @@ export default {
       }
     }
 
+    const showNotification = (message, type = 'info') => {
+      // 简单的通知实现
+      const notification = document.createElement('div')
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 text-white ${
+        type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+      }`
+      notification.textContent = message
+      document.body.appendChild(notification)
+      
+      setTimeout(() => {
+        notification.remove()
+      }, 3000)
+    }
+
     return {
       fileInput,
       selectedImage,
       isDragging,
+      isUploading,
       triggerFileInput,
       handleFileSelect,
       handleDrop,
