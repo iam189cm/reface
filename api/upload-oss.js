@@ -51,7 +51,8 @@ export default async function handler(req, res) {
       region: VITE_OSS_REGION || 'oss-cn-shanghai',
       accessKeyId: VITE_OSS_ACCESS_KEY_ID,
       accessKeySecret: VITE_OSS_ACCESS_KEY_SECRET,
-      bucket: VITE_OSS_BUCKET || 'reface'
+      bucket: VITE_OSS_BUCKET || 'reface',
+      secure: true  // 强制使用HTTPS，解决Mixed Content问题
     }
     
     console.log('创建 OSS 客户端，配置:', {
