@@ -204,6 +204,13 @@ export default {
         size: selectedImage.value.size,
         type: selectedImage.value.type
       }))
+      
+      // 将原始文件也存储起来（用于 AI 处理）
+      // 注意：File 对象不能直接 JSON 序列化，所以我们需要特殊处理
+      if (selectedImage.value.file) {
+        window.originalImageFile = selectedImage.value.file
+      }
+      
       router.push('/editor')
     }
 

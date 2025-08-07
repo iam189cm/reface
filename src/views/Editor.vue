@@ -71,6 +71,13 @@
 
       <!-- 控制面板 -->
       <div class="space-y-6">
+        <!-- AI 背景移除 -->
+        <BackgroundRemover
+          :imageFile="originalImageFile"
+          @result="handleAiResult"
+          @error="handleAiError"
+        />
+
         <!-- 磨皮控制 -->
         <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-pink-100">
           <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -183,16 +190,19 @@
 <script>
 import { ref, onMounted, reactive, computed } from 'vue'
 import SliderControl from '../components/SliderControl.vue'
+import BackgroundRemover from '../components/BackgroundRemover.vue'
 
 export default {
   name: 'Editor',
   components: {
-    SliderControl
+    SliderControl,
+    BackgroundRemover
   },
   setup() {
     const canvas = ref(null)
     const imageData = ref(null)
     const originalImage = ref(null)
+    const originalImageFile = ref(null)
     const isProcessing = ref(false)
 
     const adjustments = reactive({
@@ -213,6 +223,11 @@ export default {
       if (storedImageData) {
         imageData.value = JSON.parse(storedImageData)
         loadImageToCanvas()
+      }
+      
+      // 获取原始文件（用于 AI 处理）
+      if (window.originalImageFile) {
+        originalImageFile.value = window.originalImageFile
       }
     })
 
@@ -297,16 +312,60 @@ export default {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     }
 
+    const handleAiResult = (result) => {
+      // 处理 AI 功能结果
+      if (result.type === 'background-removal') {
+        // 将处理后的图片显示到 canvas 上
+        const img = new Image()
+        img.onload = () => {
+          const ctx = canvas.value.getContext('2d')
+          const { width, height } = canvas.value
+          
+          // 清空画布
+          ctx.clearRect(0, 0, width, height)
+          
+          // 绘制处理后的图片
+          ctx.drawImage(img, 0, 0, width, height)
+        }
+        img.src = URL.createObjectURL(result.processedBlob)
+        
+        // 显示成功提示
+        showNotification('背景移除成功！', 'success')
+      }
+    }
+
+    const handleAiError = (error) => {
+      console.error('AI 处理错误:', error)
+      showNotification(error.message || 'AI 处理失败', 'error')
+    }
+
+    const showNotification = (message, type = 'info') => {
+      // 简单的通知实现，可以后续优化
+      const notification = document.createElement('div')
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 text-white ${
+        type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+      }`
+      notification.textContent = message
+      document.body.appendChild(notification)
+      
+      setTimeout(() => {
+        notification.remove()
+      }, 3000)
+    }
+
     return {
       canvas,
       imageData,
+      originalImageFile,
       adjustments,
       canvasStyle,
       isProcessing,
       applyAdjustments,
       resetAll,
       downloadImage,
-      formatFileSize
+      formatFileSize,
+      handleAiResult,
+      handleAiError
     }
   }
 }
