@@ -1,0 +1,28 @@
+{
+  "Version": "1",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "oss:GetObject",
+        "oss:PutObject",
+        "oss:DeleteObject",
+        "oss:GetObjectAcl",
+        "oss:PutObjectAcl"
+      ],
+      "Resource": [
+        "acs:oss:*:*:reface/*"
+      ]
+    },
+    {
+      "Effect": "Allow", 
+      "Action": [
+        "oss:ListObjects",
+        "oss:GetBucketAcl"
+      ],
+      "Resource": [
+        "acs:oss:*:*:reface"
+      ]
+    }
+  ]
+}

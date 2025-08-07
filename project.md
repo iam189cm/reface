@@ -25,14 +25,14 @@
 ### API 密钥和服务配置
 ```bash
 # Remove.bg API
-VITE_REMOVE_BG_API_KEY=SgSaUqw71s6HsbTNYZ3gPSSm
+VITE_REMOVE_BG_API_KEY=your_remove_bg_api_key
 # 免费额度: 50张/月
 # 订阅价格: $9.99/月 (1000张)
 # 成本: 约 ¥0.07/张
 
 # 阿里云 OSS 存储
-VITE_OSS_ACCESS_KEY_ID=LTAI5tFXSycVLjKiaJ8dpWYo
-VITE_OSS_ACCESS_KEY_SECRET=490RG3KFD5ABEB1zHzGSfh13iHr4vM
+VITE_OSS_ACCESS_KEY_ID=********************
+VITE_OSS_ACCESS_KEY_SECRET=***************
 VITE_OSS_BUCKET=reface
 VITE_OSS_REGION=oss-cn-shanghai
 
@@ -52,9 +52,9 @@ VITE_OSS_REGION=oss-cn-shanghai
 输出目录: dist
 
 # Vercel 环境变量 (已配置)
-VITE_REMOVE_BG_API_KEY=SgSaUqw71s6HsbTNYZ3gPSSm
-VITE_OSS_ACCESS_KEY_ID=LTAI5tFXSycVLjKiaJ8dpWYo
-VITE_OSS_ACCESS_KEY_SECRET=490RG3KFD5ABEB1zHzGSfh13iHr4vM
+VITE_REMOVE_BG_API_KEY=your_remove_bg_api_key
+VITE_OSS_ACCESS_KEY_ID=your_oss_access_key_id
+VITE_OSS_ACCESS_KEY_SECRET=your_oss_access_key_secret
 VITE_OSS_BUCKET=reface
 VITE_OSS_REGION=oss-cn-shanghai
 ```

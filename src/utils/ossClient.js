@@ -45,16 +45,26 @@ const generateFileName = (originalName, prefix = '') => {
 }
 
 /**
- * 上传图片到 OSS（通过服务端 API）
+ * 上传图片到 OSS（通过服务端 API）- 强制使用 OSS，不降级
  * @param {File|Blob} file - 图片文件
  * @param {string} folder - 存储文件夹 (original/processed)
  * @param {string} originalName - 原始文件名
  * @returns {Promise<Object>} 上传结果
  */
 export const uploadToOSS = async (file, folder = 'original', originalName = 'image.jpg') => {
+  console.log('开始上传到 OSS:', {
+    filename: originalName,
+    folder: folder,
+    fileSize: file.size,
+    fileType: file.type
+  })
+
   try {
     // 第一步：获取预签名 URL
-    const response = await fetch('/api/upload-oss', {
+    const apiUrl = '/api/upload-oss'
+    console.log('请求预签名 URL:', apiUrl)
+    
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,13 +76,23 @@ export const uploadToOSS = async (file, folder = 'original', originalName = 'ima
       })
     })
 
+    console.log('预签名 API 响应状态:', response.status)
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('预签名 API 错误响应:', errorText)
+      throw new Error(`API Error: ${response.status} - ${errorText}`)
+    }
+
     const data = await response.json()
+    console.log('预签名 API 响应数据:', data)
 
     if (!data.success) {
       throw new Error(data.error || 'Failed to get upload URL')
     }
 
     // 第二步：直接上传到 OSS
+    console.log('开始上传到 OSS URL:', data.uploadUrl)
     const uploadResponse = await fetch(data.uploadUrl, {
       method: 'PUT',
       body: file,
@@ -81,30 +101,30 @@ export const uploadToOSS = async (file, folder = 'original', originalName = 'ima
       }
     })
 
+    console.log('OSS 上传响应状态:', uploadResponse.status)
+
     if (!uploadResponse.ok) {
-      throw new Error(`Upload failed: ${uploadResponse.status}`)
+      const errorText = await uploadResponse.text()
+      console.error('OSS 上传错误:', errorText)
+      throw new Error(`OSS Upload failed: ${uploadResponse.status} - ${errorText}`)
     }
 
-    return {
+    const result = {
       success: true,
       url: data.publicUrl,
       key: data.key,
       size: file.size,
       isLocal: false
     }
+    
+    console.log('OSS 上传成功:', result)
+    return result
 
   } catch (error) {
-    console.error('OSS 上传失败:', error)
+    console.error('OSS 上传失败 - 详细错误:', error)
     
-    // 上传失败时降级到本地存储
-    return {
-      success: false,
-      url: URL.createObjectURL(file),
-      key: null,
-      size: file.size,
-      isLocal: true,
-      error: error.message
-    }
+    // 不再降级到本地存储，直接抛出错误
+    throw new Error(`OSS 上传失败: ${error.message}`)
   }
 }
 

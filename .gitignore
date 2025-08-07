@@ -40,3 +40,13 @@ Thumbs.db
 # 临时文件
 *.tmp
 *.temp
+
+# 敏感信息和测试文件
+test-with-env.js
+check-ram-permissions.js
+*-secrets.js
+*-keys.js
+
+# 备份文件
+*.bak
+*.backup

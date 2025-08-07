@@ -196,16 +196,17 @@ export default {
         }
         reader.readAsDataURL(file)
 
-        // 上传到 OSS（后台进行）
+        // 上传到 OSS（必须成功）
         const { uploadToOSS } = await import('../utils/ossClient.js')
         const uploadResult = await uploadToOSS(file, 'original', file.name)
         
         if (selectedImage.value && uploadResult.success) {
           selectedImage.value.ossUrl = uploadResult.url
           selectedImage.value.ossKey = uploadResult.key
+          console.log('OSS 上传成功，URL:', uploadResult.url)
           showNotification('图片上传成功', 'success')
-        } else if (uploadResult.isLocal) {
-          console.log('使用本地存储模式')
+        } else {
+          throw new Error('OSS 上传失败')
         }
         
       } catch (error) {
@@ -232,6 +233,12 @@ export default {
 
       console.log('开始编辑，图片数据:', selectedImage.value)
       
+      // 验证图片数据完整性
+      if (!selectedImage.value.url && !selectedImage.value.ossUrl) {
+        showNotification('图片数据不完整，请重新上传', 'error')
+        return
+      }
+      
       // 将图片信息存储到 sessionStorage 以便在编辑页面使用
       const imageDataToStore = {
         url: selectedImage.value.url,
@@ -239,19 +246,37 @@ export default {
         size: selectedImage.value.size,
         type: selectedImage.value.type,
         ossUrl: selectedImage.value.ossUrl || null,
-        ossKey: selectedImage.value.ossKey || null
+        ossKey: selectedImage.value.ossKey || null,
+        timestamp: Date.now() // 添加时间戳用于调试
       }
       
       console.log('存储到 sessionStorage 的数据:', imageDataToStore)
-      sessionStorage.setItem('selectedImage', JSON.stringify(imageDataToStore))
+      
+      try {
+        sessionStorage.setItem('selectedImage', JSON.stringify(imageDataToStore))
+        console.log('数据已成功存储到 sessionStorage')
+      } catch (error) {
+        console.error('存储到 sessionStorage 失败:', error)
+        showNotification('数据存储失败，请重试', 'error')
+        return
+      }
       
       // 将原始文件也存储起来（用于 AI 处理）
       if (selectedImage.value.file) {
         window.originalImageFile = selectedImage.value.file
-        console.log('原始文件已存储到 window.originalImageFile')
+        console.log('原始文件已存储到 window.originalImageFile:', {
+          name: selectedImage.value.file.name,
+          size: selectedImage.value.file.size,
+          type: selectedImage.value.file.type
+        })
+      } else {
+        console.warn('没有原始文件可存储')
       }
       
-      router.push('/editor')
+      // 小延迟确保数据存储完成
+      setTimeout(() => {
+        router.push('/editor')
+      }, 100)
     }
 
     const clearImage = () => {

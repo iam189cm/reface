@@ -45,31 +45,44 @@
           <!-- Canvas 区域 -->
           <div class="bg-gray-100 rounded-2xl p-4 shadow-inner">
             <div class="relative bg-white rounded-xl shadow-lg overflow-hidden min-h-[300px] flex items-center justify-center">
-              <!-- 图片预览 -->
-              <img 
-                v-if="imageData && imageData.url && !originalImage"
-                :src="getImageUrl()"
-                alt="图片预览"
-                class="max-w-full max-h-[400px] object-contain rounded-lg"
-                @load="onImageLoad"
-                @error="onImageError"
-              >
-              
-              <!-- Canvas 渲染区 -->
+              <!-- Canvas 渲染区 (主要显示区域) -->
               <canvas 
                 ref="canvas"
-                v-show="originalImage"
+                v-show="originalImage && !isImageLoading"
                 class="max-w-full h-auto block mx-auto"
                 :style="canvasStyle"
               ></canvas>
               
-              <!-- 加载状态 -->
-              <div v-if="!imageData || (!originalImage && isImageLoading)" class="text-center text-gray-500">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-2"></div>
-                <p class="text-sm">加载图片中...</p>
-              </div>
+              <!-- 图片预览 (用于加载和错误处理) -->
+              <img 
+                v-if="imageData && imageData.url"
+                :src="getImageUrl()"
+                alt="图片预览"
+                class="max-w-full max-h-[400px] object-contain rounded-lg"
+                :class="{ 'opacity-0 absolute': originalImage && !isImageLoading }"
+                @load="onImageLoad"
+                @error="onImageError"
+                style="z-index: -1;"
+              >
               
               <!-- 加载状态 -->
+              <div v-if="!imageData || isImageLoading" class="text-center text-gray-500">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-2"></div>
+                <p class="text-sm">{{ !imageData ? '加载图片中...' : '处理图片中...' }}</p>
+              </div>
+              
+              <!-- 图片加载错误 -->
+              <div v-if="imageData && !originalImage && !isImageLoading" class="text-center text-gray-500">
+                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <p class="text-sm">图片加载失败</p>
+                <p class="text-xs text-gray-400 mt-1">请检查网络连接或重新上传</p>
+              </div>
+              
+              <!-- 处理状态覆盖层 -->
               <div v-if="isProcessing" class="absolute inset-0 bg-black/20 flex items-center justify-center">
                 <div class="bg-white rounded-lg p-4 shadow-lg">
                   <div class="flex items-center space-x-3">
@@ -368,7 +381,16 @@ export default {
     }
 
     const getImageUrl = () => {
-      if (!imageData.value) return ''
+      if (!imageData.value) {
+        console.log('getImageUrl: 没有图片数据')
+        return ''
+      }
+      
+      console.log('getImageUrl: 图片数据详情', {
+        ossUrl: imageData.value.ossUrl,
+        url: imageData.value.url,
+        name: imageData.value.name
+      })
       
       // 优先使用 OSS URL，降级到本地 URL
       if (imageData.value.ossUrl) {
@@ -379,6 +401,7 @@ export default {
         return imageData.value.url
       }
       
+      console.warn('getImageUrl: 没有可用的图片 URL')
       return ''
     }
 
@@ -393,27 +416,51 @@ export default {
       if (canvas.value) {
         const ctx = canvas.value.getContext('2d')
         
-        // 设置 canvas 尺寸
-        const maxWidth = 600
-        const maxHeight = 400
-        let { width, height } = img
-        
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width
-          width = maxWidth
+        // 等待图片完全加载
+        if (img.complete && img.naturalWidth > 0) {
+          drawImageToCanvas(img, ctx)
+        } else {
+          // 如果图片还没完全加载，等待一下再绘制
+          setTimeout(() => {
+            if (img.complete && img.naturalWidth > 0) {
+              drawImageToCanvas(img, ctx)
+            } else {
+              console.error('图片加载失败，无法获取尺寸')
+              showNotification('图片加载失败', 'error')
+            }
+          }, 100)
         }
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height
-          height = maxHeight
-        }
-
-        canvas.value.width = width
-        canvas.value.height = height
-        
-        // 绘制图片到 Canvas
-        ctx.drawImage(img, 0, 0, width, height)
-        console.log('图片已绘制到 Canvas:', width, 'x', height)
       }
+    }
+
+    const drawImageToCanvas = (img, ctx) => {
+      // 设置 canvas 尺寸
+      const maxWidth = 600
+      const maxHeight = 400
+      let { naturalWidth: width, naturalHeight: height } = img
+      
+      if (width === 0 || height === 0) {
+        console.error('图片尺寸无效:', width, 'x', height)
+        return
+      }
+      
+      // 计算适合的尺寸
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width
+        width = maxWidth
+      }
+      if (height > maxHeight) {
+        width = (width * maxHeight) / height
+        height = maxHeight
+      }
+
+      canvas.value.width = width
+      canvas.value.height = height
+      
+      // 清空画布并绘制图片
+      ctx.clearRect(0, 0, width, height)
+      ctx.drawImage(img, 0, 0, width, height)
+      console.log('图片已绘制到 Canvas:', width, 'x', height)
     }
 
     const onImageError = (event) => {
@@ -439,7 +486,8 @@ export default {
       handleAiError,
       getImageUrl,
       onImageLoad,
-      onImageError
+      onImageError,
+      drawImageToCanvas
     }
   }
 }
