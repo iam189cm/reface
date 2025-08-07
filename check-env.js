@@ -5,6 +5,10 @@
  * 用于验证 OSS 配置是否正确
  */
 
+// 加载 .env 文件
+import dotenv from 'dotenv'
+dotenv.config()
+
 console.log('🔍 检查环境变量配置...\n')
 
 const requiredEnvVars = [

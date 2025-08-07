@@ -4,6 +4,10 @@
  * OSS 配置和连接诊断工具
  */
 
+// 加载 .env 文件
+import dotenv from 'dotenv'
+dotenv.config()
+
 // 使用内置 fetch API (Node.js 18+)
 
 console.log('🔍 OSS 诊断工具启动...\n')
