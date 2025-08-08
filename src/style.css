@@ -4,6 +4,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* 导入自定义样式 */
+@import './styles/globals.css';
+@import './styles/components.css';
+@import './styles/utilities.css';
+
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;

@@ -1,0 +1,355 @@
+/**
+ * 组件样式
+ * 包含可复用的组件样式类
+ */
+
+/* 卡片组件 */
+.card {
+  @apply bg-white/70 backdrop-blur-md rounded-2xl shadow-lg border border-pink-100;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  @apply shadow-xl;
+  transform: translateY(-2px);
+}
+
+.card-header {
+  @apply p-6 border-b border-gray-200;
+}
+
+.card-body {
+  @apply p-6;
+}
+
+.card-footer {
+  @apply p-6 border-t border-gray-200;
+}
+
+/* 按钮组件基础样式 */
+.btn {
+  @apply inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.btn:not(:disabled):hover {
+  @apply shadow-lg transform scale-105;
+}
+
+/* 按钮尺寸 */
+.btn-sm {
+  @apply px-3 py-1.5 text-sm rounded-lg;
+}
+
+.btn-md {
+  @apply px-4 py-2 text-sm rounded-lg;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base rounded-xl;
+}
+
+/* 按钮类型 */
+.btn-primary {
+  @apply bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg focus:ring-pink-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500;
+}
+
+.btn-success {
+  @apply bg-green-500 text-white hover:bg-green-600 focus:ring-green-500;
+}
+
+.btn-warning {
+  @apply bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500;
+}
+
+.btn-error {
+  @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
+}
+
+.btn-ghost {
+  @apply text-gray-600 hover:text-pink-500 hover:bg-pink-50 focus:ring-pink-500;
+}
+
+/* 输入框组件 */
+.input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors;
+}
+
+.input:invalid {
+  @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+}
+
+.input-group {
+  @apply space-y-2;
+}
+
+.input-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.input-error {
+  @apply text-sm text-red-600;
+}
+
+.input-help {
+  @apply text-sm text-gray-500;
+}
+
+/* 加载动画 */
+.loading-spinner {
+  @apply animate-spin rounded-full border-b-2;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+/* 渐变文字 */
+.gradient-text {
+  @apply bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent;
+}
+
+/* 毛玻璃效果 */
+.glass {
+  @apply bg-white/70 backdrop-blur-md;
+}
+
+.glass-dark {
+  @apply bg-black/20 backdrop-blur-md;
+}
+
+/* 阴影层级 */
+.shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+/* 过渡动画类 */
+.transition-base {
+  transition: all var(--transition-normal);
+}
+
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* Hover 效果 */
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+/* 状态指示器 */
+.status-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+.status-online {
+  @apply bg-green-500;
+}
+
+.status-offline {
+  @apply bg-gray-400;
+}
+
+.status-busy {
+  @apply bg-red-500;
+}
+
+.status-away {
+  @apply bg-yellow-500;
+}
+
+/* 徽章 */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+  @apply bg-pink-100 text-pink-800;
+}
+
+.badge-secondary {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-error {
+  @apply bg-red-100 text-red-800;
+}
+
+/* 分隔线 */
+.divider {
+  @apply border-t border-gray-200;
+}
+
+.divider-vertical {
+  @apply border-l border-gray-200 h-full;
+}
+
+/* 骨架屏 */
+.skeleton {
+  @apply bg-gray-200 rounded animate-pulse;
+}
+
+.skeleton-text {
+  @apply h-4 bg-gray-200 rounded animate-pulse;
+}
+
+.skeleton-avatar {
+  @apply w-10 h-10 bg-gray-200 rounded-full animate-pulse;
+}
+
+/* 空状态 */
+.empty-state {
+  @apply text-center py-12 text-gray-500;
+}
+
+.empty-state-icon {
+  @apply w-16 h-16 mx-auto mb-4 text-gray-300;
+}
+
+.empty-state-title {
+  @apply text-lg font-semibold text-gray-700 mb-2;
+}
+
+.empty-state-description {
+  @apply text-gray-500;
+}
+
+/* 工具提示 */
+.tooltip {
+  @apply absolute z-10 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+}
+
+.tooltip.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 进度条 */
+.progress {
+  @apply w-full bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-bar {
+  @apply h-full bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-300;
+}
+
+/* 切换开关 */
+.toggle {
+  @apply relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2;
+}
+
+.toggle-enabled {
+  @apply bg-pink-500;
+}
+
+.toggle-disabled {
+  @apply bg-gray-200;
+}
+
+.toggle-switch {
+  @apply inline-block w-4 h-4 transform bg-white rounded-full transition-transform;
+}
+
+.toggle-switch-enabled {
+  @apply translate-x-6;
+}
+
+.toggle-switch-disabled {
+  @apply translate-x-1;
+}
+
+/* 标签页 */
+.tabs {
+  @apply border-b border-gray-200;
+}
+
+.tab {
+  @apply px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 border-transparent transition-colors;
+}
+
+.tab-active {
+  @apply text-pink-600 border-pink-600;
+}
+
+/* 面包屑 */
+.breadcrumb {
+  @apply flex items-center space-x-2 text-sm text-gray-500;
+}
+
+.breadcrumb-item {
+  @apply hover:text-gray-700;
+}
+
+.breadcrumb-separator {
+  @apply text-gray-300;
+}
+
+/* 分页 */
+.pagination {
+  @apply flex items-center justify-center space-x-1;
+}
+
+.pagination-item {
+  @apply px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors;
+}
+
+.pagination-item-active {
+  @apply text-pink-600 bg-pink-50;
+}
+
+/* 响应式工具类 */
+@media (max-width: 640px) {
+  .mobile-full {
+    @apply w-full;
+  }
+  
+  .mobile-hidden {
+    @apply hidden;
+  }
+  
+  .mobile-stack {
+    @apply flex-col space-y-2 space-x-0;
+  }
+}

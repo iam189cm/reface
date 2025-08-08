@@ -7,14 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check-env": "node check-env.js",
-    "debug-oss": "node debug-oss.js",
-    "test-private": "node test-private-bucket.js",
-    "test-oss": "node check-env.js && npm run dev"
+    "check-env": "node scripts/check-env.js",
+    "debug-oss": "node scripts/debug-oss.js",
+    "test-private": "node scripts/test-oss.js",
+    "test-oss": "node scripts/check-env.js && npm run dev"
   },
   "dependencies": {
     "ali-oss": "^6.23.0",
     "dotenv": "^17.2.1",
+    "pinia": "^3.0.3",
     "vue": "^3.4.0",
     "vue-router": "^4.2.5"
   },
