@@ -25,19 +25,32 @@ export function useTrialManager() {
     trialStore.initializeTrialData()
   }
 
-  // 尝试使用试用次数
-  const attemptUseTrial = (description = 'AI处理') => {
+  // 尝试使用试用次数（支持credit消耗）
+  const attemptUseTrial = (description = 'AI处理', creditCost = 1) => {
     if (!trialStore.canUseTrial) {
       showTrialExhaustedMessage()
       return false
     }
 
-    const success = trialStore.useTrial(description)
+    // 检查是否有足够的试用次数来支付credit成本
+    if (trialStore.remainingTrials < creditCost) {
+      showWarning(`该功能需要 ${creditCost} 次试用机会，您只剩 ${trialStore.remainingTrials} 次`)
+      return false
+    }
+
+    // 消耗对应的试用次数
+    let success = true
+    for (let i = 0; i < creditCost; i++) {
+      if (!trialStore.useTrial(`${description} (${i + 1}/${creditCost})`)) {
+        success = false
+        break
+      }
+    }
     
     if (success) {
       const remaining = trialStore.remainingTrials
       if (remaining > 0) {
-        showInfo(`试用成功，今日还可使用 ${remaining} 次`)
+        showInfo(`${description}成功，消耗${creditCost}次试用，今日还可使用 ${remaining} 次`)
       } else {
         showWarning('今日试用次数已用完，明天可继续使用')
       }

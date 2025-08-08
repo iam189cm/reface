@@ -8,6 +8,11 @@ export const API_ENDPOINTS = {
   REMOVE_BG: 'https://api.remove.bg/v1.0/removebg',
   REMOVE_BG_ACCOUNT: 'https://api.remove.bg/v1.0/account',
   
+  // VanceAI API
+  VANCE_AI_UPLOAD: 'https://api-service.vanceai.com/web_api/v1/upload',
+  VANCE_AI_TRANSFORM: 'https://api-service.vanceai.com/web_api/v1/transform',
+  VANCE_AI_PROGRESS: 'https://api-service.vanceai.com/web_api/v1/progress',
+  
   // 内部 API
   UPLOAD_OSS: '/api/upload-oss',
   DELETE_OSS: '/api/delete-oss',
@@ -172,6 +177,70 @@ export const RESPONSE_FORMAT = {
     error: '',
     code: '',
     details: null
+  }
+}
+
+// VanceAI API 配置
+export const VANCE_AI_CONFIG = {
+  // 图像放大模型
+  ENLARGE_MODEL: 'EnlargeStable',
+  
+  // 放大倍数选项
+  SCALE_OPTIONS: {
+    '2x': { 
+      scale: '2x', 
+      credit: 1, 
+      name: '2倍放大',
+      description: '适合日常使用，快速处理'
+    },
+    '4x': { 
+      scale: '4x', 
+      credit: 2, 
+      name: '4倍放大',
+      description: '高清处理，细节丰富'
+    },
+    '8x': { 
+      scale: '8x', 
+      credit: 4, 
+      name: '8倍放大',
+      description: '超高清处理，专业级效果'
+    }
+  },
+  
+  // 默认参数
+  DEFAULT_PARAMS: {
+    suppress_noise: 26,    // 降噪强度
+    remove_blur: 26,       // 去模糊强度
+    scale: '2x'           // 默认放大倍数
+  },
+  
+  // 参数范围
+  PARAM_RANGES: {
+    suppress_noise: { min: 0, max: 100, step: 1 },
+    remove_blur: { min: 0, max: 100, step: 1 }
+  },
+  
+  // 处理状态
+  JOB_STATUS: {
+    WAITING: 'waiting',
+    PROCESS: 'process', 
+    FINISH: 'finish',
+    FATAL: 'fatal',
+    WEBHOOK: 'webhook'
+  },
+  
+  // 轮询配置
+  POLLING: {
+    INTERVAL: 2000,        // 2秒轮询一次
+    MAX_ATTEMPTS: 150,     // 最多轮询150次（5分钟）
+    TIMEOUT: 300000        // 5分钟超时
+  },
+  
+  // 试用限制
+  TRIAL_RESTRICTIONS: {
+    ALLOWED_SCALES: ['2x'],           // 试用用户只能使用2x
+    DAILY_CREDITS: 3,                 // 每日3个credit
+    PREMIUM_SCALES: ['4x', '8x']      // 付费用户专享
   }
 }
 

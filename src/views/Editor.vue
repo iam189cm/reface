@@ -15,6 +15,13 @@
 
       <!-- 控制面板 -->
       <div class="space-y-6">
+        <!-- AI 图像放大器 -->
+        <AIImageEnlarger
+          :image-file="originalImageFile"
+          @result="handleAiResult"
+          @error="handleAiError"
+        />
+
         <!-- AI 背景移除 -->
         <AIBackgroundRemover
           :image-file="originalImageFile"
@@ -33,6 +40,7 @@
 import { computed, onMounted } from 'vue'
 import EmptyImagePrompt from '../components/feature/EmptyImagePrompt.vue'
 import ImageCanvas from '../components/feature/ImageCanvas.vue'
+import AIImageEnlarger from '../components/feature/AIImageEnlarger.vue'
 import AIBackgroundRemover from '../components/feature/AIBackgroundRemover.vue'
 import FilterControlPanel from '../components/feature/FilterControlPanel.vue'
 import { useImageEditor } from '../composables/useImageEditor.js'
@@ -42,6 +50,7 @@ export default {
   components: {
     EmptyImagePrompt,
     ImageCanvas,
+    AIImageEnlarger,
     AIBackgroundRemover,
     FilterControlPanel
   },
