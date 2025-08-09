@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-pink-100">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+  <div class="bg-white/70 backdrop-blur-md rounded-xl shadow-sm p-4 border border-gray-100/50">
+    <h3 class="text-base font-medium text-gray-800 mb-3 flex items-center">
       <div :class="iconClasses">
         <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
           <!-- 星星图标 -->
@@ -50,7 +50,7 @@ export default {
   setup(props) {
     // 图标样式
     const iconClasses = computed(() => {
-      const baseClasses = 'w-6 h-6 rounded-full flex items-center justify-center mr-3'
+      const baseClasses = 'w-5 h-5 rounded-full flex items-center justify-center mr-2'
       
       const colorClasses = {
         pink: 'bg-pink-100',

@@ -4,33 +4,53 @@
     <EmptyImagePrompt v-if="!hasImage" />
 
     <!-- 编辑界面 -->
-    <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 图片预览区域 -->
-      <div class="lg:col-span-2">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <!-- 图片预览区域 - 在大屏幕上居中，小屏幕上在上方 -->
+      <div class="col-span-1 md:col-span-2 lg:col-span-2 lg:order-2 order-1">
         <ImageCanvas 
           @ai-result="handleAiResult"
           @ai-error="handleAiError"
         />
       </div>
 
-      <!-- 控制面板 -->
-      <div class="space-y-6">
-        <!-- AI 图像放大器 -->
-        <AIImageEnlarger
-          :image-file="originalImageFile"
-          @result="handleAiResult"
-          @error="handleAiError"
-        />
+      <!-- 基础调整控制面板 - 左侧 -->
+      <div class="col-span-1 md:col-span-1 lg:col-span-1 lg:order-1 order-2 md:order-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+            </svg>
+            基础调整
+          </h3>
+          <FilterControlPanel />
+        </div>
+      </div>
 
-        <!-- AI 背景移除 -->
-        <AIBackgroundRemover
-          :image-file="originalImageFile"
-          @result="handleAiResult"
-          @error="handleAiError"
-        />
+      <!-- AI功能控制面板 - 右侧 -->
+      <div class="col-span-1 md:col-span-1 lg:col-span-1 lg:order-3 order-3 md:order-3">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            AI 功能
+          </h3>
+          <div class="space-y-4">
+            <!-- AI 图像放大器 -->
+            <AIImageEnlarger
+              :image-file="originalImageFile"
+              @result="handleAiResult"
+              @error="handleAiError"
+            />
 
-        <!-- 滤镜控制面板 -->
-        <FilterControlPanel />
+            <!-- AI 背景移除 -->
+            <AIBackgroundRemover
+              :image-file="originalImageFile"
+              @result="handleAiResult"
+              @error="handleAiError"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
