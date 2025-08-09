@@ -326,6 +326,7 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
     }, 3, 1000);
 
     console.log('VanceAI处理任务响应状态:', response.status);
+    console.log('VanceAI处理任务响应Content-Type:', response.headers.get('content-type'));
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '无法读取错误信息');
@@ -333,16 +334,46 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
       throw new Error(`处理任务提交失败: ${response.status} - ${errorText}`);
     }
 
-    const result = await response.json();
-    console.log('VanceAI处理任务响应:', result);
+    // 检查响应类型
+    const contentType = response.headers.get('content-type') || '';
+    console.log('响应Content-Type:', contentType);
     
-    if (result.code !== 200) {
-      console.error('VanceAI处理任务业务错误:', result);
-      throw new Error(result.message || `处理任务提交失败，错误码: ${result.code}`);
-    }
+    if (contentType.startsWith('image/')) {
+      // 明确的图片类型，直接处理为blob
+      console.log('VanceAI API使用同步模式，直接返回处理结果');
+      const imageBlob = await response.blob();
+      console.log('直接获取处理结果，大小:', imageBlob.size);
+      return { mode: 'sync', result: imageBlob };
+    } else if (contentType.includes('json')) {
+      // 明确的JSON类型
+      const result = await response.json();
+      console.log('VanceAI处理任务响应:', result);
+      
+      if (result.code !== 200) {
+        console.error('VanceAI处理任务业务错误:', result);
+        throw new Error(result.message || `处理任务提交失败，错误码: ${result.code}`);
+      }
 
-    console.log('VanceAI处理任务提交成功，trans_id:', result.data.trans_id);
-    return result.data.trans_id;
+      console.log('VanceAI处理任务提交成功，trans_id:', result.data.trans_id);
+      return { mode: 'async', trans_id: result.data.trans_id };
+    } else {
+      // 不确定的类型，先尝试作为图片数据
+      console.log('未知Content-Type，尝试作为图片数据处理');
+      try {
+        const imageBlob = await response.blob();
+        console.log('成功获取图片数据，大小:', imageBlob.size);
+        
+        // 检查blob是否真的是图片数据
+        if (imageBlob.size > 1000) { // 假设真实图片至少1KB
+          return { mode: 'sync', result: imageBlob };
+        } else {
+          throw new Error('数据大小异常，可能不是图片');
+        }
+      } catch (blobError) {
+        console.error('作为图片处理失败:', blobError.message);
+        throw new Error('响应数据格式无法识别');
+      }
+    }
   } catch (error) {
     console.error('VanceAI 处理任务提交错误:', error);
     throw error;
@@ -422,7 +453,19 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
     
     // 步骤2: 提交处理任务
     onProgress?.({ step: 2, progress: 20, message: '正在提交处理任务...' });
-    const transId = await vanceAIEnlarge(uid, apiToken, params);
+    const enlargeResult = await vanceAIEnlarge(uid, apiToken, params);
+    
+    // 检查是同步还是异步模式
+    if (enlargeResult.mode === 'sync') {
+      // 同步模式，直接返回结果
+      console.log('同步模式处理完成');
+      onProgress?.({ step: 4, progress: 100, message: '处理完成！' });
+      return enlargeResult.result;
+    }
+    
+    // 异步模式，继续轮询
+    const transId = enlargeResult.trans_id;
+    console.log('异步模式，开始轮询，trans_id:', transId);
     
     // 步骤3: 轮询检查进度
     onProgress?.({ step: 3, progress: 30, message: '正在处理图片，请稍候...' });
