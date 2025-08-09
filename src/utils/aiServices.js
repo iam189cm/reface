@@ -139,6 +139,12 @@ export const vanceAIUpload = async (imageFile, apiToken) => {
     throw new Error('VanceAI API Token 未配置');
   }
 
+  console.log('VanceAI上传开始:', {
+    fileName: imageFile.name,
+    fileSize: imageFile.size,
+    fileType: imageFile.type
+  });
+
   const formData = new FormData();
   formData.append('api_token', apiToken);
   formData.append('file', imageFile);
@@ -149,16 +155,23 @@ export const vanceAIUpload = async (imageFile, apiToken) => {
       body: formData
     });
 
+    console.log('VanceAI上传响应状态:', response.status);
+
     if (!response.ok) {
-      throw new Error(`上传失败: ${response.status}`);
+      const errorText = await response.text().catch(() => '无法读取错误信息');
+      console.error('VanceAI上传HTTP错误:', errorText);
+      throw new Error(`上传失败: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('VanceAI上传响应:', result);
     
     if (result.code !== 200) {
-      throw new Error(result.message || '上传失败');
+      console.error('VanceAI上传业务错误:', result);
+      throw new Error(result.message || `上传失败，错误码: ${result.code}`);
     }
 
+    console.log('VanceAI上传成功，uid:', result.data.uid);
     return result.data.uid;
   } catch (error) {
     console.error('VanceAI 上传错误:', error);
@@ -198,6 +211,12 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
     }
   };
 
+  console.log('VanceAI处理任务提交:', {
+    uid,
+    params,
+    jconfig: JSON.stringify(jconfig)
+  });
+
   const formData = new FormData();
   formData.append('api_token', apiToken);
   formData.append('uid', uid);
@@ -209,16 +228,23 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
       body: formData
     });
 
+    console.log('VanceAI处理任务响应状态:', response.status);
+
     if (!response.ok) {
-      throw new Error(`处理任务提交失败: ${response.status}`);
+      const errorText = await response.text().catch(() => '无法读取错误信息');
+      console.error('VanceAI处理任务HTTP错误:', errorText);
+      throw new Error(`处理任务提交失败: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('VanceAI处理任务响应:', result);
     
     if (result.code !== 200) {
-      throw new Error(result.message || '处理任务提交失败');
+      console.error('VanceAI处理任务业务错误:', result);
+      throw new Error(result.message || `处理任务提交失败，错误码: ${result.code}`);
     }
 
+    console.log('VanceAI处理任务提交成功，trans_id:', result.data.trans_id);
     return result.data.trans_id;
   } catch (error) {
     console.error('VanceAI 处理任务提交错误:', error);
@@ -248,13 +274,17 @@ export const vanceAICheckProgress = async (transId, apiToken) => {
     });
 
     if (!response.ok) {
-      throw new Error(`进度查询失败: ${response.status}`);
+      const errorText = await response.text().catch(() => '无法读取错误信息');
+      console.error('VanceAI进度查询HTTP错误:', errorText);
+      throw new Error(`进度查询失败: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('VanceAI进度查询响应:', result);
     
     if (result.code !== 200) {
-      throw new Error(result.message || '进度查询失败');
+      console.error('VanceAI进度查询业务错误:', result);
+      throw new Error(result.message || `进度查询失败，错误码: ${result.code}`);
     }
 
     return result.data;
@@ -274,6 +304,13 @@ export const vanceAICheckProgress = async (transId, apiToken) => {
 export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress) => {
   const apiToken = import.meta.env.VITE_VANCE_AI_API_TOKEN;
   
+  console.log('VanceAI完整处理流程开始:', {
+    fileName: imageFile?.name,
+    fileSize: imageFile?.size,
+    params,
+    hasApiToken: !!apiToken
+  });
+  
   if (!apiToken || apiToken === 'your_vance_ai_api_token_here') {
     throw new Error('VanceAI API Token 未配置');
   }
@@ -292,6 +329,7 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
     
     let attempts = 0;
     const maxAttempts = VANCE_AI_CONFIG.POLLING.MAX_ATTEMPTS;
+    console.log('开始轮询，最大尝试次数:', maxAttempts);
     
     while (attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, VANCE_AI_CONFIG.POLLING.INTERVAL));
@@ -299,25 +337,34 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
       const progressData = await vanceAICheckProgress(transId, apiToken);
       const status = progressData.status;
       
+      console.log(`轮询第${attempts + 1}次，状态:`, status, '数据:', progressData);
+      
       // 计算进度百分比 (30% - 90%)
       const progressPercent = 30 + (attempts / maxAttempts) * 60;
       
       if (status === VANCE_AI_CONFIG.JOB_STATUS.FINISH) {
         // 处理完成，下载结果
+        console.log('处理完成，开始下载结果，URL:', progressData.result_url);
         onProgress?.({ step: 4, progress: 95, message: '正在下载处理结果...' });
+        
+        if (!progressData.result_url) {
+          throw new Error('处理完成但未返回结果URL');
+        }
         
         const resultResponse = await fetch(progressData.result_url);
         if (!resultResponse.ok) {
-          throw new Error('下载处理结果失败');
+          throw new Error(`下载处理结果失败: ${resultResponse.status}`);
         }
         
         const resultBlob = await resultResponse.blob();
+        console.log('结果下载成功，大小:', resultBlob.size);
         onProgress?.({ step: 4, progress: 100, message: '处理完成！' });
         
         return resultBlob;
         
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.FATAL) {
-        throw new Error('图片处理失败');
+        console.error('处理失败，状态为FATAL，数据:', progressData);
+        throw new Error(`图片处理失败: ${progressData.message || '未知错误'}`);
         
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.WAITING || status === VANCE_AI_CONFIG.JOB_STATUS.PROCESS) {
         // 继续等待
@@ -330,10 +377,12 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
         
       } else {
         // 未知状态，继续等待
+        console.warn('未知状态:', status, '继续等待...');
         attempts++;
       }
     }
     
+    console.error('处理超时，达到最大尝试次数:', maxAttempts);
     throw new Error('处理超时，请稍后重试');
     
   } catch (error) {
