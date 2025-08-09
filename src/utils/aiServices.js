@@ -128,12 +128,78 @@ export const compressImage = (file, maxWidth = 800, quality = 0.8) => {
 
 import { API_ENDPOINTS, VANCE_AI_CONFIG } from '../constants/apiConstants.js';
 
+// 网络连接诊断函数
+const checkNetworkConnection = async () => {
+  try {
+    console.log('检查网络连接...');
+    
+    // 测试基本网络连接
+    const testResponse = await fetch('https://httpbin.org/get', {
+      method: 'GET',
+      signal: AbortSignal.timeout(10000)
+    });
+    
+    if (testResponse.ok) {
+      console.log('基本网络连接正常');
+      
+      // 测试VanceAI域名连接
+      try {
+        const vanceAITest = await fetch('https://api-service.vanceai.com', {
+          method: 'HEAD',
+          signal: AbortSignal.timeout(15000)
+        });
+        console.log('VanceAI服务器连接状态:', vanceAITest.status);
+      } catch (vanceError) {
+        console.warn('VanceAI服务器连接测试失败:', vanceError.message);
+      }
+      
+    } else {
+      console.warn('网络连接可能存在问题');
+    }
+  } catch (error) {
+    console.error('网络诊断失败:', error.message);
+  }
+};
+
 /**
  * VanceAI API - 上传图片
  * @param {File|Blob} imageFile - 图片文件
  * @param {string} apiToken - VanceAI API Token
  * @returns {Promise<string>} 返回图片uid
  */
+// 带重试的网络请求函数
+const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.log(`尝试请求 ${url}，第${i + 1}次`);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒超时
+      
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      return response;
+      
+    } catch (error) {
+      console.error(`请求失败，第${i + 1}次尝试:`, error.message);
+      
+      if (i === retries - 1) {
+        // 最后一次尝试失败
+        throw error;
+      }
+      
+      // 等待后重试
+      console.log(`等待${delay}ms后重试...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      delay *= 1.5; // 递增延迟
+    }
+  }
+};
+
 export const vanceAIUpload = async (imageFile, apiToken) => {
   if (!apiToken) {
     throw new Error('VanceAI API Token 未配置');
@@ -150,10 +216,13 @@ export const vanceAIUpload = async (imageFile, apiToken) => {
   formData.append('file', imageFile);
 
   try {
-    const response = await fetch(API_ENDPOINTS.VANCE_AI_UPLOAD, {
+    const response = await fetchWithRetry(API_ENDPOINTS.VANCE_AI_UPLOAD, {
       method: 'POST',
-      body: formData
-    });
+      body: formData,
+      headers: {
+        // 不设置Content-Type，让浏览器自动设置multipart/form-data
+      }
+    }, 3, 2000);
 
     console.log('VanceAI上传响应状态:', response.status);
 
@@ -175,6 +244,16 @@ export const vanceAIUpload = async (imageFile, apiToken) => {
     return result.data.uid;
   } catch (error) {
     console.error('VanceAI 上传错误:', error);
+    
+    // 提供更友好的错误信息
+    if (error.name === 'AbortError') {
+      throw new Error('上传超时，请检查网络连接后重试');
+    } else if (error.message.includes('Failed to fetch')) {
+      throw new Error('网络连接失败，请检查网络状态后重试');
+    } else if (error.message.includes('ERR_TIMED_OUT')) {
+      throw new Error('请求超时，请稍后重试');
+    }
+    
     throw error;
   }
 };
@@ -223,10 +302,10 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
   formData.append('jconfig', JSON.stringify(jconfig));
 
   try {
-    const response = await fetch(API_ENDPOINTS.VANCE_AI_TRANSFORM, {
+    const response = await fetchWithRetry(API_ENDPOINTS.VANCE_AI_TRANSFORM, {
       method: 'POST',
       body: formData
-    });
+    }, 3, 1000);
 
     console.log('VanceAI处理任务响应状态:', response.status);
 
@@ -268,10 +347,10 @@ export const vanceAICheckProgress = async (transId, apiToken) => {
   formData.append('trans_id', transId);
 
   try {
-    const response = await fetch(API_ENDPOINTS.VANCE_AI_PROGRESS, {
+    const response = await fetchWithRetry(API_ENDPOINTS.VANCE_AI_PROGRESS, {
       method: 'POST',
       body: formData
-    });
+    }, 2, 500);
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '无法读取错误信息');
@@ -316,6 +395,9 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
   }
 
   try {
+    // 步骤0: 网络连接检查
+    await checkNetworkConnection();
+    
     // 步骤1: 上传图片
     onProgress?.({ step: 1, progress: 10, message: '正在上传图片到VanceAI...' });
     const uid = await vanceAIUpload(imageFile, apiToken);
