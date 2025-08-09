@@ -276,19 +276,37 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
     remove_blur = VANCE_AI_CONFIG.DEFAULT_PARAMS.remove_blur
   } = params;
 
+  // 尝试简化的配置格式
   const jconfig = {
-    job: 'enlarge',
-    config: {
-      module: 'enlarge',
-      module_params: {
-        model_name: VANCE_AI_CONFIG.ENLARGE_MODEL,
-        suppress_noise: suppress_noise,
-        remove_blur: remove_blur,
-        scale: scale
+    "job": "enlarge",
+    "config": {
+      "module": "enlarge",
+      "module_params": {
+        "model_name": "EnlargeStable",
+        "scale": scale
       },
-      out_params: {}
+      "out_params": {}
     }
   };
+  
+  // 如果有高级参数，再添加
+  if (suppress_noise !== undefined && suppress_noise !== null) {
+    jconfig.config.module_params.suppress_noise = Number(suppress_noise);
+  }
+  if (remove_blur !== undefined && remove_blur !== null) {
+    jconfig.config.module_params.remove_blur = Number(remove_blur);
+  }
+  
+  // 验证参数
+  console.log('处理参数验证:', {
+    model_name: jconfig.config.module_params.model_name,
+    suppress_noise: jconfig.config.module_params.suppress_noise,
+    remove_blur: jconfig.config.module_params.remove_blur,
+    scale: jconfig.config.module_params.scale,
+    scale_type: typeof jconfig.config.module_params.scale,
+    suppress_noise_type: typeof jconfig.config.module_params.suppress_noise,
+    remove_blur_type: typeof jconfig.config.module_params.remove_blur
+  });
 
   console.log('VanceAI处理任务提交:', {
     uid,
@@ -514,8 +532,28 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
         return resultBlob;
         
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.FATAL) {
-        console.error('处理失败，状态为FATAL，数据:', progressData);
-        throw new Error(`图片处理失败: ${progressData.message || '未知错误'}`);
+        console.error('处理失败，状态为FATAL，完整数据:', progressData);
+        
+        // 尝试获取更详细的错误信息
+        let errorMessage = '图片处理失败';
+        
+        if (progressData.message) {
+          errorMessage += `: ${progressData.message}`;
+        } else if (progressData.error) {
+          errorMessage += `: ${progressData.error}`;
+        } else if (progressData.error_message) {
+          errorMessage += `: ${progressData.error_message}`;
+        } else {
+          // 常见的FATAL错误原因
+          errorMessage += ': 可能的原因包括图片格式不支持、图片损坏或处理参数错误';
+        }
+        
+        // 添加文件大小信息帮助诊断
+        if (progressData.filesize === 0) {
+          errorMessage += ' (文件大小为0，可能是图片处理失败)';
+        }
+        
+        throw new Error(errorMessage);
         
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.WAITING || status === VANCE_AI_CONFIG.JOB_STATUS.PROCESS) {
         // 继续等待
