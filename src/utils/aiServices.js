@@ -344,14 +344,83 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
       
       if (status === VANCE_AI_CONFIG.JOB_STATUS.FINISH) {
         // 处理完成，下载结果
-        console.log('处理完成，开始下载结果，URL:', progressData.result_url);
+        console.log('处理完成，检查下载URL字段:', progressData);
         onProgress?.({ step: 4, progress: 95, message: '正在下载处理结果...' });
         
-        if (!progressData.result_url) {
-          throw new Error('处理完成但未返回结果URL');
+        // 检查多种可能的URL字段名
+        const downloadUrl = progressData.result_url || 
+                           progressData.download_url || 
+                           progressData.url || 
+                           progressData.output_url ||
+                           progressData.result;
+        
+        if (!downloadUrl) {
+          // 如果没有直接的下载URL，尝试通过trans_id构造下载请求
+          console.log('未找到直接下载URL，尝试通过API获取结果');
+          
+          // 构造下载请求
+          const downloadFormData = new FormData();
+          downloadFormData.append('api_token', apiToken);
+          downloadFormData.append('trans_id', transId);
+          
+          try {
+            // 方法1: 尝试通过download端点获取结果
+            const downloadResponse = await fetch('https://api-service.vanceai.com/web_api/v1/download', {
+              method: 'POST',
+              body: downloadFormData
+            });
+            
+            if (downloadResponse.ok) {
+              const downloadResult = await downloadResponse.json();
+              console.log('download端点响应:', downloadResult);
+              
+              if (downloadResult.code === 200 && downloadResult.data && downloadResult.data.download_url) {
+                const resultResponse = await fetch(downloadResult.data.download_url);
+                if (resultResponse.ok) {
+                  const resultBlob = await resultResponse.blob();
+                  console.log('通过download端点获取结果成功，大小:', resultBlob.size);
+                  onProgress?.({ step: 4, progress: 100, message: '处理完成！' });
+                  return resultBlob;
+                }
+              }
+            } else {
+              console.error('download端点HTTP错误:', downloadResponse.status);
+            }
+            
+            // 方法2: 尝试直接通过progress端点的其他字段
+            console.log('尝试重新查询progress，寻找其他字段');
+            const retryProgressData = await vanceAICheckProgress(transId, apiToken);
+            console.log('重新查询progress结果:', retryProgressData);
+            
+            // 检查是否有其他可能的URL字段
+            const possibleUrls = [
+              retryProgressData.result_url,
+              retryProgressData.download_url, 
+              retryProgressData.output_url,
+              retryProgressData.file_url,
+              retryProgressData.image_url
+            ].filter(url => url && typeof url === 'string');
+            
+            if (possibleUrls.length > 0) {
+              console.log('找到可能的下载URL:', possibleUrls[0]);
+              const resultResponse = await fetch(possibleUrls[0]);
+              if (resultResponse.ok) {
+                const resultBlob = await resultResponse.blob();
+                console.log('通过重新查询获取结果成功，大小:', resultBlob.size);
+                onProgress?.({ step: 4, progress: 100, message: '处理完成！' });
+                return resultBlob;
+              }
+            }
+            
+          } catch (downloadError) {
+            console.error('尝试download端点失败:', downloadError);
+          }
+          
+          throw new Error('处理完成但无法获取结果文件，API可能缺少下载URL');
         }
         
-        const resultResponse = await fetch(progressData.result_url);
+        console.log('找到下载URL:', downloadUrl);
+        const resultResponse = await fetch(downloadUrl);
         if (!resultResponse.ok) {
           throw new Error(`下载处理结果失败: ${resultResponse.status}`);
         }
