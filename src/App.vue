@@ -19,6 +19,7 @@ import AppHeader from './components/layout/AppHeader.vue'
 import Loading from './components/ui/Loading.vue'
 import { useAppStore } from './stores/appStore.js'
 import { useTrialStore } from './stores/trialStore.js'
+import { useAuthStore } from './stores/authStore.js'
 
 export default {
   name: 'App',
@@ -29,20 +30,38 @@ export default {
   setup() {
     const appStore = useAppStore()
     const trialStore = useTrialStore()
+    const authStore = useAuthStore()
     
     // 全局加载状态
-    const isGlobalLoading = computed(() => appStore.isGlobalLoading)
-    const globalLoadingMessage = computed(() => appStore.globalLoadingMessage)
+    const isGlobalLoading = computed(() => appStore.isGlobalLoading || authStore.loading)
+    const globalLoadingMessage = computed(() => {
+      if (authStore.loading && !authStore.initialized) {
+        return '正在初始化用户认证...'
+      }
+      return appStore.globalLoadingMessage
+    })
     
     // 应用初始化
-    onMounted(() => {
-      // 恢复应用设置
-      appStore.restoreSettings()
-      
-      // 初始化试用数据
-      trialStore.initializeTrialData()
-      
-      console.log('Reface 应用已初始化')
+    onMounted(async () => {
+      try {
+        // 首先初始化认证状态
+        await authStore.initialize()
+        
+        // 恢复应用设置
+        appStore.restoreSettings()
+        
+        // 初始化试用数据（如果用户未登录）
+        if (!authStore.isAuthenticated) {
+          trialStore.initializeTrialData()
+        }
+        
+        console.log('Reface 应用已初始化', {
+          authenticated: authStore.isAuthenticated,
+          userType: authStore.userType
+        })
+      } catch (error) {
+        console.error('应用初始化失败:', error)
+      }
     })
     
     return {

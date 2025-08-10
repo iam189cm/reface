@@ -13,6 +13,7 @@
     "test-oss": "node scripts/check-env.js && npm run dev"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.54.0",
     "ali-oss": "^6.23.0",
     "dotenv": "^17.2.1",
     "pinia": "^3.0.3",
