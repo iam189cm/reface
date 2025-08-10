@@ -276,6 +276,59 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    // 发送手机验证码
+    async sendPhoneOTP(phone) {
+      this.loading = true
+      this.error = null
+      
+      try {
+        const { error } = await supabase.auth.signInWithOtp({
+          phone: phone,
+          options: {
+            shouldCreateUser: true
+          }
+        })
+        
+        if (error) throw error
+        
+        console.log('[Auth] 验证码已发送至:', phone)
+        return { error: null }
+        
+      } catch (error) {
+        console.error('[Auth] 发送验证码失败:', error)
+        this.error = handleSupabaseError(error, '发送验证码')
+        return { error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // 手机号验证码登录
+    async signInWithPhoneOTP(phone, otp) {
+      this.loading = true
+      this.error = null
+      
+      try {
+        const { data, error } = await supabase.auth.verifyOtp({
+          phone: phone,
+          token: otp,
+          type: 'sms'
+        })
+        
+        if (error) throw error
+        
+        console.log('[Auth] 手机号登录成功:', phone)
+        return { data, error: null }
+        
+      } catch (error) {
+        console.error('[Auth] 手机号登录失败:', error)
+        this.error = handleSupabaseError(error, '手机号登录')
+        return { data: null, error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
     // 登出
     async signOut() {
       this.loading = true
