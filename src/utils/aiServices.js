@@ -200,15 +200,60 @@ const fetchWithRetry = async (url, options, retries = 3, delay = 2000) => {
   }
 };
 
+// 诊断图片信息的辅助函数
+const diagnoseImageFile = (imageFile) => {
+  const diagnosis = {
+    name: imageFile.name,
+    size: imageFile.size,
+    type: imageFile.type,
+    size_mb: (imageFile.size / (1024 * 1024)).toFixed(2),
+    potential_issues: []
+  };
+  
+  // 检查文件大小
+  if (imageFile.size === 0) {
+    diagnosis.potential_issues.push('文件大小为0，文件可能损坏');
+  } else if (imageFile.size > 10 * 1024 * 1024) { // 大于10MB
+    diagnosis.potential_issues.push('文件过大，建议压缩后上传');
+  } else if (imageFile.size < 1024) { // 小于1KB
+    diagnosis.potential_issues.push('文件过小，可能不是有效图片');
+  }
+  
+  // 检查文件格式
+  const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  if (!supportedTypes.includes(imageFile.type.toLowerCase())) {
+    diagnosis.potential_issues.push(`不支持的图片格式: ${imageFile.type}，建议使用 JPG 或 PNG`);
+  }
+  
+  // 检查文件扩展名
+  const extension = imageFile.name.split('.').pop()?.toLowerCase();
+  if (!['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
+    diagnosis.potential_issues.push(`不支持的文件扩展名: ${extension}`);
+  }
+  
+  diagnosis.is_likely_valid = diagnosis.potential_issues.length === 0;
+  
+  return diagnosis;
+};
+
 export const vanceAIUpload = async (imageFile, apiToken) => {
   if (!apiToken) {
     throw new Error('VanceAI API Token 未配置');
   }
 
+  // 诊断图片文件
+  const imageDiagnosis = diagnoseImageFile(imageFile);
+  console.log('VanceAI上传图片诊断:', imageDiagnosis);
+  
+  if (!imageDiagnosis.is_likely_valid) {
+    console.warn('⚠️ 图片可能存在问题，但仍将尝试上传:', imageDiagnosis.potential_issues);
+  }
+
   console.log('VanceAI上传开始:', {
     fileName: imageFile.name,
     fileSize: imageFile.size,
-    fileType: imageFile.type
+    fileType: imageFile.type,
+    diagnosis: imageDiagnosis
   });
 
   const formData = new FormData();
@@ -297,8 +342,8 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
     jconfig.config.module_params.remove_blur = Number(remove_blur);
   }
   
-  // 验证参数
-  console.log('处理参数验证:', {
+  // 参数验证和诊断
+  const paramValidation = {
     model_name: jconfig.config.module_params.model_name,
     suppress_noise: jconfig.config.module_params.suppress_noise,
     remove_blur: jconfig.config.module_params.remove_blur,
@@ -306,7 +351,38 @@ export const vanceAIEnlarge = async (uid, apiToken, params = {}) => {
     scale_type: typeof jconfig.config.module_params.scale,
     suppress_noise_type: typeof jconfig.config.module_params.suppress_noise,
     remove_blur_type: typeof jconfig.config.module_params.remove_blur
+  };
+  
+  // 验证参数范围
+  const validationErrors = [];
+  
+  if (!['2x', '4x', '8x'].includes(scale)) {
+    validationErrors.push(`无效的放大倍数: ${scale}，应为 2x, 4x, 或 8x`);
+  }
+  
+  if (jconfig.config.module_params.suppress_noise !== undefined) {
+    const noiseValue = jconfig.config.module_params.suppress_noise;
+    if (noiseValue < 0 || noiseValue > 100) {
+      validationErrors.push(`suppress_noise 参数超出范围: ${noiseValue}，应在 0-100 之间`);
+    }
+  }
+  
+  if (jconfig.config.module_params.remove_blur !== undefined) {
+    const blurValue = jconfig.config.module_params.remove_blur;
+    if (blurValue < 0 || blurValue > 100) {
+      validationErrors.push(`remove_blur 参数超出范围: ${blurValue}，应在 0-100 之间`);
+    }
+  }
+  
+  console.log('VanceAI处理参数验证:', {
+    ...paramValidation,
+    validation_errors: validationErrors,
+    is_valid: validationErrors.length === 0
   });
+  
+  if (validationErrors.length > 0) {
+    console.warn('参数验证警告:', validationErrors);
+  }
 
   console.log('VanceAI处理任务提交:', {
     uid,
@@ -577,26 +653,57 @@ export const vanceAIEnlargeComplete = async (imageFile, params = {}, onProgress)
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.FATAL) {
         console.error('处理失败，状态为FATAL，完整数据:', progressData);
         
-        // 尝试获取更详细的错误信息
-        let errorMessage = '图片处理失败';
+        // 收集详细的诊断信息
+        const diagnosticInfo = {
+          status: status,
+          filesize: progressData.filesize,
+          message: progressData.message,
+          error: progressData.error,
+          error_message: progressData.error_message,
+          trans_id: transId,
+          original_file_info: {
+            name: imageFile.name,
+            size: imageFile.size,
+            type: imageFile.type
+          },
+          processing_params: params,
+          full_response: progressData
+        };
         
-        if (progressData.message) {
-          errorMessage += `: ${progressData.message}`;
+        console.error('VanceAI处理失败诊断信息:', diagnosticInfo);
+        
+        // 构建用户友好的错误信息
+        let errorMessage = 'VanceAI图像处理失败';
+        
+        // 优先显示API返回的具体错误信息
+        if (progressData.message && progressData.message !== 'fatal') {
+          errorMessage += `：${progressData.message}`;
         } else if (progressData.error) {
-          errorMessage += `: ${progressData.error}`;
+          errorMessage += `：${progressData.error}`;
         } else if (progressData.error_message) {
-          errorMessage += `: ${progressData.error_message}`;
+          errorMessage += `：${progressData.error_message}`;
         } else {
-          // 常见的FATAL错误原因
-          errorMessage += ': 可能的原因包括图片格式不支持、图片损坏或处理参数错误';
+          // 根据常见情况提供建议
+          if (progressData.filesize === 0) {
+            errorMessage += '：处理结果文件大小为0，可能原因：';
+            errorMessage += '\n• 图片格式不支持（建议使用JPG或PNG）';
+            errorMessage += '\n• 图片质量过低或损坏';
+            errorMessage += '\n• 图片尺寸过大或过小';
+            errorMessage += '\n• 处理参数设置错误';
+          } else {
+            errorMessage += '：服务器处理异常，建议：';
+            errorMessage += '\n• 稍后重试';
+            errorMessage += '\n• 尝试其他图片';
+            errorMessage += '\n• 调整处理参数';
+          }
         }
         
-        // 添加文件大小信息帮助诊断
-        if (progressData.filesize === 0) {
-          errorMessage += ' (文件大小为0，可能是图片处理失败)';
-        }
+        // 添加Credit扣除说明
+        errorMessage += `\n\n⚠️ Credit已被扣除，建议联系VanceAI客服处理退款`;
         
-        throw new Error(errorMessage);
+        const enhancedError = new Error(errorMessage);
+        enhancedError.diagnosticInfo = diagnosticInfo;
+        throw enhancedError;
         
       } else if (status === VANCE_AI_CONFIG.JOB_STATUS.WAITING || status === VANCE_AI_CONFIG.JOB_STATUS.PROCESS) {
         // 继续等待
@@ -638,3 +745,83 @@ export const CACHE_CONFIG = {
   // 是否启用缓存
   ENABLED: true
 }
+
+// VanceAI 调试工具
+export const vanceAIDebugTools = {
+  // 测试API连接
+  async testConnection(apiToken) {
+    try {
+      console.log('测试VanceAI API连接...');
+      
+      // 创建一个1x1像素的测试图片
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1, 1);
+      
+      const testBlob = await new Promise(resolve => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+      
+      const testFile = new File([testBlob], 'test.png', { type: 'image/png' });
+      
+      // 尝试上传测试文件
+      const uid = await vanceAIUpload(testFile, apiToken);
+      console.log('✅ API连接测试成功，上传UID:', uid);
+      
+      return { success: true, uid };
+    } catch (error) {
+      console.error('❌ API连接测试失败:', error);
+      return { success: false, error: error.message };
+    }
+  },
+  
+  // 收集诊断信息
+  collectDiagnosticInfo() {
+    const info = {
+      timestamp: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      api_token_configured: !!(import.meta.env.VITE_VANCE_AI_API_TOKEN && 
+                             import.meta.env.VITE_VANCE_AI_API_TOKEN !== 'your_vance_ai_api_token_here'),
+      api_endpoints: {
+        upload: API_ENDPOINTS.VANCE_AI_UPLOAD,
+        transform: API_ENDPOINTS.VANCE_AI_TRANSFORM,
+        progress: API_ENDPOINTS.VANCE_AI_PROGRESS
+      },
+      config: VANCE_AI_CONFIG
+    };
+    
+    console.log('VanceAI 诊断信息:', info);
+    return info;
+  },
+  
+  // 验证处理参数
+  validateParams(params) {
+    const validation = {
+      params,
+      errors: [],
+      warnings: []
+    };
+    
+    const { scale, suppress_noise, remove_blur } = params;
+    
+    if (scale && !['2x', '4x', '8x'].includes(scale)) {
+      validation.errors.push(`无效的放大倍数: ${scale}`);
+    }
+    
+    if (suppress_noise !== undefined && (suppress_noise < 0 || suppress_noise > 100)) {
+      validation.errors.push(`suppress_noise 参数错误: ${suppress_noise}`);
+    }
+    
+    if (remove_blur !== undefined && (remove_blur < 0 || remove_blur > 100)) {
+      validation.errors.push(`remove_blur 参数错误: ${remove_blur}`);
+    }
+    
+    validation.is_valid = validation.errors.length === 0;
+    
+    console.log('参数验证结果:', validation);
+    return validation;
+  }
+};
