@@ -50,15 +50,24 @@
         
         <!-- 发送验证码 -->
         <div v-if="!otpSent" class="space-y-3">
-          <input
-            v-model="phone"
-            type="tel"
-            placeholder="请输入手机号 (如: +86 13800138000)"
-            class="w-full px-4 py-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          />
+          <div class="relative">
+            <input
+              v-model="phone"
+              @input="handlePhoneInput"
+              type="tel"
+              placeholder="请输入手机号"
+              class="w-full px-4 py-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+            <div v-if="phoneRegion" class="absolute right-3 top-3 text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+              {{ phoneRegion }}
+            </div>
+          </div>
+          <div class="text-xs text-gray-600">
+            支持格式：13800138000 或 +86 13800138000
+          </div>
           <button
             @click="sendRegisterOTP"
-            :disabled="phoneLoading || !phone"
+            :disabled="phoneLoading || !phone || !isValidPhone"
             class="w-full py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors disabled:opacity-50"
           >
             {{ phoneLoading ? '发送中...' : '发送验证码' }}
@@ -67,7 +76,7 @@
 
         <!-- 输入验证码 -->
         <div v-else class="space-y-3">
-          <p class="text-sm text-green-600">验证码已发送至 {{ phone }}</p>
+          <p class="text-sm text-green-600">验证码已发送至 {{ displayPhone }}</p>
           <input
             v-model="otp"
             type="text"
@@ -185,6 +194,9 @@ const phone = ref('')
 const otp = ref('')
 const otpSent = ref(false)
 const phoneLoading = ref(false)
+const phoneRegion = ref('')
+const isValidPhone = ref(false)
+const displayPhone = ref('')
 
 // 表单验证
 const canSubmit = computed(() => {
@@ -240,10 +252,50 @@ const togglePhoneRegister = () => {
   error.value = ''
 }
 
+// 处理手机号输入
+const handlePhoneInput = async () => {
+  if (!phone.value) {
+    phoneRegion.value = ''
+    isValidPhone.value = false
+    displayPhone.value = ''
+    return
+  }
+  
+  try {
+    const { detectPhoneRegion, isValidPhoneNumber, getDisplayPhoneNumber, formatPhoneNumber } = await import('@/utils/phoneUtils.js')
+    
+    phoneRegion.value = detectPhoneRegion(phone.value)
+    isValidPhone.value = isValidPhoneNumber(phone.value)
+    displayPhone.value = getDisplayPhoneNumber(phone.value)
+    
+    // 如果是有效的手机号，自动格式化显示
+    if (isValidPhone.value) {
+      const formatted = formatPhoneNumber(phone.value)
+      if (formatted !== phone.value) {
+        // 只在用户停止输入500ms后自动格式化，避免输入过程中的干扰
+        setTimeout(() => {
+          if (isValidPhone.value && phone.value) {
+            displayPhone.value = getDisplayPhoneNumber(formatted)
+          }
+        }, 500)
+      }
+    }
+  } catch (error) {
+    console.error('手机号处理出错:', error)
+    phoneRegion.value = '格式错误'
+    isValidPhone.value = false
+  }
+}
+
 // 发送注册验证码
 const sendRegisterOTP = async () => {
   if (!phone.value) {
     error.value = '请输入手机号'
+    return
+  }
+  
+  if (!isValidPhone.value) {
+    error.value = '手机号格式不正确'
     return
   }
   

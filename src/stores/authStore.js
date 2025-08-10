@@ -282,8 +282,17 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
       
       try {
+        // 导入手机号格式化工具
+        const { formatPhoneNumber } = await import('@/utils/phoneUtils.js')
+        
+        // 格式化手机号为国际标准格式
+        const formattedPhone = formatPhoneNumber(phone)
+        
+        console.log('[Auth] 原始手机号:', phone)
+        console.log('[Auth] 格式化后:', formattedPhone)
+        
         const { error } = await supabase.auth.signInWithOtp({
-          phone: phone,
+          phone: formattedPhone,
           options: {
             shouldCreateUser: true
           }
@@ -291,7 +300,7 @@ export const useAuthStore = defineStore('auth', {
         
         if (error) throw error
         
-        console.log('[Auth] 验证码已发送至:', phone)
+        console.log('[Auth] 验证码已发送至:', formattedPhone)
         return { error: null }
         
       } catch (error) {
@@ -309,15 +318,23 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
       
       try {
+        // 导入手机号格式化工具
+        const { formatPhoneNumber } = await import('@/utils/phoneUtils.js')
+        
+        // 格式化手机号为国际标准格式
+        const formattedPhone = formatPhoneNumber(phone)
+        
+        console.log('[Auth] 验证手机号:', formattedPhone)
+        
         const { data, error } = await supabase.auth.verifyOtp({
-          phone: phone,
+          phone: formattedPhone,
           token: otp,
           type: 'sms'
         })
         
         if (error) throw error
         
-        console.log('[Auth] 手机号登录成功:', phone)
+        console.log('[Auth] 手机号登录成功:', formattedPhone)
         return { data, error: null }
         
       } catch (error) {
