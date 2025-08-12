@@ -276,7 +276,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // 发送手机验证码
+    // 发送手机验证码 (使用阿里云SMS)
     async sendPhoneOTP(phone) {
       this.loading = true
       this.error = null
@@ -291,28 +291,36 @@ export const useAuthStore = defineStore('auth', {
         console.log('[Auth] 原始手机号:', phone)
         console.log('[Auth] 格式化后:', formattedPhone)
         
-        const { error } = await supabase.auth.signInWithOtp({
-          phone: formattedPhone,
-          options: {
-            shouldCreateUser: true
-          }
+        // 调用自定义短信API
+        const response = await fetch('/api/send-sms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            phone: formattedPhone
+          })
         })
         
-        if (error) throw error
+        const result = await response.json()
+        
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || '发送验证码失败')
+        }
         
         console.log('[Auth] 验证码已发送至:', formattedPhone)
         return { error: null }
         
       } catch (error) {
         console.error('[Auth] 发送验证码失败:', error)
-        this.error = handleSupabaseError(error, '发送验证码')
+        this.error = error.message || '发送验证码失败'
         return { error: this.error }
       } finally {
         this.loading = false
       }
     },
 
-    // 手机号验证码登录
+    // 手机号验证码登录 (使用阿里云SMS)
     async signInWithPhoneOTP(phone, otp) {
       this.loading = true
       this.error = null
@@ -326,20 +334,42 @@ export const useAuthStore = defineStore('auth', {
         
         console.log('[Auth] 验证手机号:', formattedPhone)
         
-        const { data, error } = await supabase.auth.verifyOtp({
-          phone: formattedPhone,
-          token: otp,
-          type: 'sms'
+        // 调用自定义验证API
+        const response = await fetch('/api/verify-sms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            phone: formattedPhone,
+            code: otp
+          })
         })
         
-        if (error) throw error
+        const result = await response.json()
         
-        console.log('[Auth] 手机号登录成功:', formattedPhone)
-        return { data, error: null }
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || '验证码验证失败')
+        }
+        
+        console.log('[Auth] 手机号验证成功:', formattedPhone)
+        console.log('[Auth] 用户信息:', result.user)
+        
+        // 如果返回了重定向URL，则跳转进行自动登录
+        if (result.redirectUrl) {
+          window.location.href = result.redirectUrl
+          return { data: result, error: null }
+        }
+        
+        // 否则手动设置用户状态
+        this.user = result.user
+        this.profile = result.profile
+        
+        return { data: result, error: null }
         
       } catch (error) {
         console.error('[Auth] 手机号登录失败:', error)
-        this.error = handleSupabaseError(error, '手机号登录')
+        this.error = error.message || '验证码验证失败'
         return { data: null, error: this.error }
       } finally {
         this.loading = false
