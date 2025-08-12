@@ -19,19 +19,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/modules/auth/authStore.js'
+import { useAuthManager } from '@/composables/business/useAuthManager.js'
 import { useNotification } from '@/composables/ui/useNotification.js'
 import Loading from '@/components/ui/Loading.vue'
 
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
+const authManager = useAuthManager()
 const { showSuccess, showError } = useNotification()
 
 const message = ref('正在处理登录...')
 const error = ref('')
+
+// 监听认证状态变化
+watch(() => authManager.isAuthenticated.value, (isAuthenticated) => {
+  if (isAuthenticated && !error.value) {
+    message.value = '登录成功，正在跳转...'
+    showSuccess('登录成功！')
+    
+    // 跳转到目标页面或首页
+    const redirectTo = route.query.redirect || '/'
+    setTimeout(() => {
+      router.push(redirectTo)
+    }, 1500)
+  }
+}, { immediate: true })
 
 onMounted(async () => {
   try {
@@ -40,30 +54,28 @@ onMounted(async () => {
       throw new Error(route.query.error_description || '登录失败')
     }
 
-    // 等待认证状态初始化
-    if (!authStore.initialized) {
-      await authStore.initialize()
-    }
-
-    // 检查是否已成功登录
-    if (authStore.isAuthenticated) {
-      message.value = '登录成功，正在跳转...'
-      showSuccess('登录成功！')
-      
-      // 跳转到目标页面或首页
-      const redirectTo = route.query.redirect || '/'
-      setTimeout(() => {
-        router.push(redirectTo)
-      }, 1500)
-    } else {
-      // 如果没有登录成功，等待一段时间后重定向
-      setTimeout(() => {
-        if (!authStore.isAuthenticated) {
+    console.log('[Callback] 开始处理OAuth回调')
+    
+    // 初始化认证管理器（这会设置Supabase监听器）
+    await authManager.initialize()
+    
+    // 等待一段时间让Supabase处理OAuth回调
+    setTimeout(async () => {
+      if (!authManager.isAuthenticated.value && !error.value) {
+        // 如果还没有认证成功，尝试手动获取当前会话
+        try {
+          const session = await authManager.getCurrentSession()
+          if (!session) {
+            throw new Error('登录验证失败，请重试')
+          }
+        } catch (err) {
           throw new Error('登录验证失败，请重试')
         }
-      }, 3000)
-    }
+      }
+    }, 5000) // 给更多时间处理OAuth回调
+    
   } catch (err) {
+    console.error('[Callback] 处理错误:', err)
     error.value = err.message
     showError('登录失败：' + err.message)
   }

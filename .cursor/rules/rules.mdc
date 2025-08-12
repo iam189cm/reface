@@ -29,4 +29,4 @@ alwaysApply: true
 
 13. 如果想要知道当前的日期和时间，可以使用终端命令date来获取当前日期和时间。
 
-14. 不进行本地调试。更新到github，会自动同步到vercel，访问 https://https://reface.dataechotech.com/ 就行。
+14. 进行本地调试，没问题之后，更新到github，会自动同步到vercel，访问 https://https://reface.dataechotech.com/ 就行。

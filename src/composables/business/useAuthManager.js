@@ -7,6 +7,19 @@ import { inject, computed, ref } from 'vue'
 import { useAuthStore } from '../../stores/modules/auth/authStore.js'
 import { useNotification } from '../ui/useNotification.js'
 
+// 创建单例Supabase客户端，避免多实例警告
+let _supabaseClient = null
+
+const getSupabaseClient = async (configService) => {
+  if (!_supabaseClient) {
+    const supabaseConfig = configService.supabase
+    const { createClient } = await import('@supabase/supabase-js')
+    _supabaseClient = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    console.log('[AuthManager] 创建单例Supabase客户端')
+  }
+  return _supabaseClient
+}
+
 export function useAuthManager() {
   const authStore = useAuthStore()
   const { showError, showSuccess, showInfo } = useNotification()
@@ -38,10 +51,8 @@ export function useAuthManager() {
     try {
       console.log('[AuthManager] 开始初始化认证系统')
       
-      // 获取Supabase客户端（从配置服务）
-      const supabaseConfig = configService.supabase
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+      // 获取单例Supabase客户端
+      const supabase = await getSupabaseClient(configService)
       
       // 监听认证状态变化
       supabase.auth.onAuthStateChange(async (event, session) => {
@@ -245,10 +256,8 @@ export function useAuthManager() {
   const signOut = async () => {
     return await _withOperation('登出', async () => {
       try {
-        // 获取Supabase客户端
-        const supabaseConfig = configService.supabase
-        const { createClient } = await import('@supabase/supabase-js')
-        const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+        // 使用单例Supabase客户端
+        const supabase = await getSupabaseClient(configService)
         
         const { error } = await supabase.auth.signOut()
         if (error) throw error
@@ -324,10 +333,8 @@ export function useAuthManager() {
     // 动态导入邮箱认证服务
     const { EmailAuthService } = await import('../../services/auth/EmailAuthService.js')
     
-    // 获取Supabase客户端
-    const supabaseConfig = configService.supabase
-    const { createClient } = await import('@supabase/supabase-js')
-    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    // 使用单例Supabase客户端
+    const supabase = await getSupabaseClient(configService)
     
     return new EmailAuthService(supabase, configService)
   }
@@ -339,10 +346,8 @@ export function useAuthManager() {
   const _getPhoneAuthService = async () => {
     const { PhoneAuthService } = await import('../../services/auth/PhoneAuthService.js')
     
-    // 获取Supabase客户端
-    const supabaseConfig = configService.supabase
-    const { createClient } = await import('@supabase/supabase-js')
-    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    // 使用单例Supabase客户端
+    const supabase = await getSupabaseClient(configService)
     
     const httpClient = serviceContainer.get('httpClient')
     return new PhoneAuthService(supabase, configService, httpClient)
@@ -355,10 +360,8 @@ export function useAuthManager() {
   const _getSocialAuthService = async () => {
     const { SocialAuthService } = await import('../../services/auth/SocialAuthService.js')
     
-    // 获取Supabase客户端
-    const supabaseConfig = configService.supabase
-    const { createClient } = await import('@supabase/supabase-js')
-    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    // 使用单例Supabase客户端
+    const supabase = await getSupabaseClient(configService)
     
     return new SocialAuthService(supabase, configService)
   }
@@ -370,14 +373,55 @@ export function useAuthManager() {
   const _getUserProfileService = async () => {
     const { UserProfileService } = await import('../../services/auth/UserProfileService.js')
     
-    // 获取Supabase客户端
-    const supabaseConfig = configService.supabase
-    const { createClient } = await import('@supabase/supabase-js')
-    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    // 使用单例Supabase客户端
+    const supabase = await getSupabaseClient(configService)
     
     return new UserProfileService(supabase, configService)
   }
   
+  // ==========  会话管理  ==========
+  
+  /**
+   * 获取当前会话
+   */
+  const getCurrentSession = async () => {
+    try {
+      const supabase = await getSupabaseClient(configService)
+      
+      const { data: { session }, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        console.error('[AuthManager] 获取会话失败:', error)
+        throw error
+      }
+      
+      if (session?.user) {
+        // 更新store状态
+        authStore.setSession(session)
+        
+        // 获取用户资料
+        try {
+          const userProfileService = await _getUserProfileService()
+          const profile = await userProfileService.getOrCreateProfile(session.user.id)
+          authStore.setProfile(profile)
+          
+          console.log('[AuthManager] 会话恢复成功:', {
+            userId: session.user.id,
+            email: session.user.email
+          })
+        } catch (profileError) {
+          console.warn('[AuthManager] 获取用户资料失败:', profileError)
+          // 即使获取资料失败，也保持基本的认证状态
+        }
+      }
+      
+      return session
+    } catch (error) {
+      console.error('[AuthManager] getCurrentSession error:', error)
+      throw error
+    }
+  }
+
   return {
     // 状态
     isAuthenticated,
@@ -397,6 +441,7 @@ export function useAuthManager() {
     signInWithProvider,
     updateProfile,
     signOut,
+    getCurrentSession,
     
     // Store actions（直接暴露）
     clearError: authStore.clearError,

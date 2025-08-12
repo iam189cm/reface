@@ -57,6 +57,19 @@ export default {
     const aiServicesCount = ref(0)
     const configErrors = ref([])
     
+    // 🆕 同步设置依赖注入容器（必须在setup()同步执行期间）
+    console.log('🚀 开始初始化 Reface 应用')
+    const container = isDevelopment.value
+      ? setupDevelopmentDI()
+      : setupDependencyInjection()
+    
+    // 🆕 立即提供依赖注入服务给子组件
+    provide('serviceContainer', container)
+    provide('configService', container.get('configService'))
+    provide('aiServices', container.get('aiServiceContainer'))
+    provide('httpClient', container.get('httpClient'))
+    provide('progressManager', container.get('progressManager'))
+    
     // 全局加载状态
     const isGlobalLoading = computed(() => appStore.isGlobalLoading || authStore.loading)
     const globalLoadingMessage = computed(() => {
@@ -66,16 +79,9 @@ export default {
       return appStore.globalLoadingMessage
     })
     
-    // 应用初始化
+    // 应用初始化（异步部分）
     onMounted(async () => {
       try {
-        console.log('🚀 开始初始化 Reface 应用')
-        
-        // 🆕 设置依赖注入容器
-        const container = isDevelopment.value
-          ? setupDevelopmentDI()
-          : setupDependencyInjection()
-        
         // 🆕 进行健康检查
         const health = await healthCheck(container)
         serviceHealthy.value = health.healthy
@@ -84,13 +90,6 @@ export default {
         if (!health.healthy) {
           console.warn('⚠️ 服务健康检查发现问题:', health.errors)
         }
-        
-        // 🆕 提供依赖注入服务给子组件
-        provide('serviceContainer', container)
-        provide('configService', container.get('configService'))
-        provide('aiServices', container.get('aiServiceContainer'))
-        provide('httpClient', container.get('httpClient'))
-        provide('progressManager', container.get('progressManager'))
         
         // 统计AI服务数量（用于开发环境显示）
         if (isDevelopment.value) {
