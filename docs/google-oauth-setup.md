@@ -49,6 +49,7 @@
 Name: Reface Web Client
 
 Authorized JavaScript origins:
+https://reface.dataechotech.com
 https://reface.vercel.app
 http://localhost:5173
 
@@ -93,11 +94,12 @@ https://jleiazztrzjunxuzbkgd.supabase.co/auth/v1/callback
 
 #### 设置 Site URL：
 ```
-https://reface.vercel.app
+https://reface.dataechotech.com
 ```
 
 #### 设置 Redirect URLs：
 ```
+https://reface.dataechotech.com/auth/callback
 https://reface.vercel.app/auth/callback
 http://localhost:5173/auth/callback
 ```
@@ -114,7 +116,7 @@ http://localhost:5173/auth/callback
    git push origin main
    ```
 
-2. **等待部署完成**，然后访问：https://reface.vercel.app
+2. **等待部署完成**，然后访问：https://reface.dataechotech.com
 
 3. **测试流程**：
    - 点击 **"登录"**
