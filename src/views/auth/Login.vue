@@ -163,11 +163,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/authStore.js'
-import { useNotification } from '@/composables/useNotification.js'
+import { useAuthStore } from '@/stores/modules/auth/authStore.js'
+import { useAuthManager } from '@/composables/business/useAuthManager.js'
+import { useNotification } from '@/composables/ui/useNotification.js'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { signInWithEmail, signInWithProvider: authSignInWithProvider } = useAuthManager()
 const { showSuccess, showError } = useNotification()
 
 const email = ref('')
@@ -190,12 +192,11 @@ const handleEmailLogin = async () => {
   loading.value = true
   error.value = ''
   
-  const { error: loginError } = await authStore.signInWithEmail(email.value, password.value)
+  const result = await signInWithEmail(email.value, password.value)
   
-  if (loginError) {
-    error.value = loginError
+  if (!result.success) {
+    error.value = result.error
   } else {
-    showSuccess('登录成功')
     router.push('/')
   }
   
@@ -207,10 +208,10 @@ const signInWithProvider = async (provider) => {
   loading.value = true
   error.value = ''
   
-  const { error: loginError } = await authStore.signInWithProvider(provider)
+  const result = await authSignInWithProvider(provider)
   
-  if (loginError) {
-    error.value = loginError
+  if (!result.success) {
+    error.value = result.error
     loading.value = false
   }
   // 第三方登录会重定向，不需要手动处理成功状态

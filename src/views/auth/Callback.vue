@@ -21,8 +21,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/authStore.js'
-import { useNotification } from '@/composables/useNotification.js'
+import { useAuthStore } from '@/stores/modules/auth/authStore.js'
+import { useNotification } from '@/composables/ui/useNotification.js'
 import Loading from '@/components/ui/Loading.vue'
 
 const router = useRouter()

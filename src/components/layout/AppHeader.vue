@@ -101,8 +101,8 @@
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/authStore.js'
-import { useNotification } from '@/composables/useNotification.js'
+import { useAuthStore } from '@/stores/modules/auth/authStore.js'
+import { useNotification } from '@/composables/ui/useNotification.js'
 import { USER_TYPE_CONFIGS } from '@/utils/supabase.js'
 
 // 导航链接组件

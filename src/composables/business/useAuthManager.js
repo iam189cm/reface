@@ -84,7 +84,7 @@ export function useAuthManager() {
   const signUpWithEmail = async (email, password, options = {}) => {
     return await _withOperation('邮箱注册', async () => {
       // 获取邮箱认证服务
-      const emailAuthService = _getEmailAuthService()
+      const emailAuthService = await _getEmailAuthService()
       
       const result = await emailAuthService.signUp(email, password, options)
       
@@ -108,7 +108,7 @@ export function useAuthManager() {
    */
   const signInWithEmail = async (email, password) => {
     return await _withOperation('邮箱登录', async () => {
-      const emailAuthService = _getEmailAuthService()
+      const emailAuthService = await _getEmailAuthService()
       
       const result = await emailAuthService.signIn(email, password)
       
@@ -130,7 +130,7 @@ export function useAuthManager() {
    */
   const resetPassword = async (email) => {
     return await _withOperation('密码重置', async () => {
-      const emailAuthService = _getEmailAuthService()
+      const emailAuthService = await _getEmailAuthService()
       
       const result = await emailAuthService.resetPassword(email)
       
@@ -151,7 +151,7 @@ export function useAuthManager() {
    */
   const sendPhoneOTP = async (phone) => {
     return await _withOperation('发送验证码', async () => {
-      const phoneAuthService = _getPhoneAuthService()
+      const phoneAuthService = await _getPhoneAuthService()
       
       const result = await phoneAuthService.sendOTP(phone)
       
@@ -170,7 +170,7 @@ export function useAuthManager() {
    */
   const signInWithPhone = async (phone, otp) => {
     return await _withOperation('手机号登录', async () => {
-      const phoneAuthService = _getPhoneAuthService()
+      const phoneAuthService = await _getPhoneAuthService()
       
       const result = await phoneAuthService.signInWithOTP(phone, otp)
       
@@ -197,7 +197,7 @@ export function useAuthManager() {
    */
   const signInWithProvider = async (provider) => {
     return await _withOperation(`${provider}登录`, async () => {
-      const socialAuthService = _getSocialAuthService()
+      const socialAuthService = await _getSocialAuthService()
       
       const result = await socialAuthService.signInWithProvider(provider)
       
@@ -222,7 +222,7 @@ export function useAuthManager() {
         throw new Error('用户未登录')
       }
       
-      const userProfileService = _getUserProfileService()
+      const userProfileService = await _getUserProfileService()
       
       const result = await userProfileService.updateProfile(authStore.userId, updates)
       
@@ -299,7 +299,7 @@ export function useAuthManager() {
    */
   const _fetchOrCreateProfile = async (userId) => {
     try {
-      const userProfileService = _getUserProfileService()
+      const userProfileService = await _getUserProfileService()
       
       const { profile } = await userProfileService.getOrCreateProfile(userId)
       authStore.setProfile(profile)
@@ -316,43 +316,66 @@ export function useAuthManager() {
    * 获取邮箱认证服务
    * @private
    */
-  const _getEmailAuthService = () => {
+  const _getEmailAuthService = async () => {
     if (!serviceContainer) {
       throw new Error('服务容器未注入，请检查依赖注入配置')
     }
     
-    // 这里应该从服务容器获取邮箱认证服务
-    // 由于时间限制，这里使用简化的方式
-    const { EmailAuthService } = require('../../services/auth/EmailAuthService.js')
-    return new EmailAuthService(null, configService)
+    // 动态导入邮箱认证服务
+    const { EmailAuthService } = await import('../../services/auth/EmailAuthService.js')
+    
+    // 获取Supabase客户端
+    const supabaseConfig = configService.supabase
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    
+    return new EmailAuthService(supabase, configService)
   }
   
   /**
    * 获取手机认证服务
    * @private
    */
-  const _getPhoneAuthService = () => {
-    const { PhoneAuthService } = require('../../services/auth/PhoneAuthService.js')
+  const _getPhoneAuthService = async () => {
+    const { PhoneAuthService } = await import('../../services/auth/PhoneAuthService.js')
+    
+    // 获取Supabase客户端
+    const supabaseConfig = configService.supabase
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    
     const httpClient = serviceContainer.get('httpClient')
-    return new PhoneAuthService(null, configService, httpClient)
+    return new PhoneAuthService(supabase, configService, httpClient)
   }
   
   /**
    * 获取第三方认证服务
    * @private
    */
-  const _getSocialAuthService = () => {
-    const { SocialAuthService } = require('../../services/auth/SocialAuthService.js')
-    return new SocialAuthService(null, configService)
+  const _getSocialAuthService = async () => {
+    const { SocialAuthService } = await import('../../services/auth/SocialAuthService.js')
+    
+    // 获取Supabase客户端
+    const supabaseConfig = configService.supabase
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    
+    return new SocialAuthService(supabase, configService)
   }
   
   /**
    * 获取用户资料服务
    * @private
    */
-  const _getUserProfileService = () => {
-    const { UserProfileService } = require('../../services/auth/UserProfileService.js')
-    return new UserProfileService(null, configService)
+  const _getUserProfileService = async () => {
+    const { UserProfileService } = await import('../../services/auth/UserProfileService.js')
+    
+    // 获取Supabase客户端
+    const supabaseConfig = configService.supabase
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    
+    return new UserProfileService(supabase, configService)
   }
   
   return {
