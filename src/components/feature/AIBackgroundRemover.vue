@@ -32,29 +32,29 @@
 
       <!-- 升级提示 -->
       <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">试用次数已用完</p>
+        <p class="text-sm text-gray-600 mb-2">{{ $t('trial.status.exhausted') }}</p>
         <Button
           type="warning"
           size="small"
           @click="showUpgradeModal = true"
         >
-          ✨ 升级解锁更多次数
+          {{ $t('trial.upgrade.buttons.unlockMore') }}
         </Button>
       </div>
 
       <!-- API Key 配置（开发模式） -->
       <div v-if="isDevelopment" class="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
         <label class="block text-sm font-medium text-gray-700 mb-2">
-          Remove.bg API Key (开发模式)
+          {{ $t('ai.backgroundRemover.apiKeyLabel') }}
         </label>
         <input
           v-model="apiKey"
           type="password"
-          placeholder="请输入 Remove.bg API Key"
+          :placeholder="$t('ai.backgroundRemover.apiKeyPlaceholder')"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-sm"
         >
         <p class="text-xs text-gray-600 mt-1">
-          生产环境将使用服务器端 API Key
+          {{ $t('ai.backgroundRemover.apiKeyNote') }}
         </p>
       </div>
     </div>
@@ -69,8 +69,8 @@ import { ref, computed } from 'vue'
 import Button from '../ui/Button.vue'
 import TrialStatusPanel from './TrialStatusPanel.vue'
 import UpgradeModal from './UpgradeModal.vue'
-import { useAIServices } from '../../composables/useAIServices.js'
-import { useTrialManager } from '../../composables/useTrialManager.js'
+import { useAIServices } from '../../composables/business/useAIServices.js'
+import { useTrialManager } from '../../composables/business/useTrialManager.js'
 
 export default {
   name: 'AIBackgroundRemover',

@@ -18,7 +18,7 @@ export function useAIServices() {
   }
   
   const imageStore = useImageStore()
-  const { attemptUseTrial } = useTrialManager()
+  const { ensureCredits, attemptUseTrial } = useTrialManager()
   const { showError, showSuccess, showInfo } = useNotification()
   
   // 处理状态
@@ -51,8 +51,10 @@ export function useAIServices() {
       return false
     }
     
-    // 检查试用次数
-    if (!attemptUseTrial('AI背景移除')) {
+    // 🆕 确保配额可用
+    const creditsResult = await ensureCredits('remove_background', 1, 'AI背景移除')
+    if (!creditsResult.success) {
+      onError?.(new Error(creditsResult.error))
       return false
     }
     
@@ -129,11 +131,13 @@ export function useAIServices() {
       remove_blur = 30
     } = params
     
-    // 检查试用权限
+    // 🆕 确保配额可用
     const scaleCredits = { '2x': 1, '4x': 2, '8x': 3 }
     const creditsNeeded = scaleCredits[scale] || 1
     
-    if (!attemptUseTrial('AI图像放大', creditsNeeded)) {
+    const creditsResult = await ensureCredits('enlarge_image', creditsNeeded, `AI图像${scale}放大`)
+    if (!creditsResult.success) {
+      onError?.(new Error(creditsResult.error))
       return false
     }
     

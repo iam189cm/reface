@@ -139,75 +139,7 @@ export function useCanvasOperations() {
     return { width, height }
   }
 
-  // 应用滤镜到ImageData
-  const applyFiltersToImageData = (imageData, filters) => {
-    if (!imageData || !filters) {
-      return imageData
-    }
 
-    const data = imageData.data
-    const {
-      brightness = 0,
-      contrast = 0,
-      saturation = 0,
-      smoothing = 0,
-      whitening = 0
-    } = filters
-
-    for (let i = 0; i < data.length; i += 4) {
-      let r = data[i]
-      let g = data[i + 1]
-      let b = data[i + 2]
-
-      // 应用亮度
-      if (brightness !== 0) {
-        const brightnessFactor = brightness * 2.55
-        r = Math.max(0, Math.min(255, r + brightnessFactor))
-        g = Math.max(0, Math.min(255, g + brightnessFactor))
-        b = Math.max(0, Math.min(255, b + brightnessFactor))
-      }
-
-      // 应用对比度
-      if (contrast !== 0) {
-        const contrastFactor = (259 * (contrast * 2.55 + 255)) / (255 * (259 - contrast * 2.55))
-        r = Math.max(0, Math.min(255, contrastFactor * (r - 128) + 128))
-        g = Math.max(0, Math.min(255, contrastFactor * (g - 128) + 128))
-        b = Math.max(0, Math.min(255, contrastFactor * (b - 128) + 128))
-      }
-
-      // 应用饱和度
-      if (saturation !== 0) {
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b
-        const satFactor = (saturation + 50) / 50
-        r = Math.max(0, Math.min(255, gray + satFactor * (r - gray)))
-        g = Math.max(0, Math.min(255, gray + satFactor * (g - gray)))
-        b = Math.max(0, Math.min(255, gray + satFactor * (b - gray)))
-      }
-
-      // 应用美白
-      if (whitening > 0) {
-        const whiteningFactor = whitening / 100
-        r = r + (255 - r) * whiteningFactor * 0.3
-        g = g + (255 - g) * whiteningFactor * 0.3
-        b = b + (255 - b) * whiteningFactor * 0.3
-      }
-
-      // 应用磨皮（简化版）
-      if (smoothing > 0) {
-        const smoothingFactor = smoothing / 100 * 0.2
-        const avg = (r + g + b) / 3
-        r = r + (avg - r) * smoothingFactor
-        g = g + (avg - g) * smoothingFactor
-        b = b + (avg - b) * smoothingFactor
-      }
-
-      data[i] = Math.round(r)
-      data[i + 1] = Math.round(g)
-      data[i + 2] = Math.round(b)
-    }
-
-    return imageData
-  }
 
   // 从URL加载图片
   const loadImageFromURL = (url) => {
@@ -241,7 +173,6 @@ export function useCanvasOperations() {
     
     // 工具方法
     calculateDisplaySize,
-    applyFiltersToImageData,
     loadImageFromURL
   }
 }

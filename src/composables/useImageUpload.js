@@ -5,7 +5,7 @@
 
 import { ref } from 'vue'
 import { useImageStore } from '../stores/imageStore.js'
-import { useNotification } from './useNotification.js'
+import { useNotification } from './ui/useNotification.js'
 
 export function useImageUpload() {
   const imageStore = useImageStore()

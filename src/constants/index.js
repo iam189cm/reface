@@ -42,14 +42,7 @@ export const UPLOAD_LIMITS = {
   MAX_HEIGHT: 4000
 }
 
-// 图片处理参数范围
-export const FILTER_RANGES = {
-  SMOOTHING: { min: 0, max: 100, default: 0 },
-  WHITENING: { min: 0, max: 100, default: 0 },
-  BRIGHTNESS: { min: -50, max: 50, default: 0 },
-  CONTRAST: { min: -50, max: 50, default: 0 },
-  SATURATION: { min: -50, max: 50, default: 0 }
-}
+
 
 // Canvas 配置
 export const CANVAS_CONFIG = {
@@ -140,23 +133,23 @@ export const LOADING_MESSAGES = {
 // 功能特色数据
 export const FEATURES = [
   {
-    id: 'smoothing',
-    title: '智能磨皮',
-    description: '自然磨皮，保持肌理细节',
-    icon: 'heart',
-    color: 'pink'
-  },
-  {
-    id: 'brightness',
-    title: '亮度调节',
-    description: '精准调节图片亮度对比度',
-    icon: 'bulb',
+    id: 'ai-remove-bg',
+    title: 'AI 背景移除',
+    description: '智能识别主体，一键移除背景',
+    icon: 'magic',
     color: 'purple'
   },
   {
-    id: 'whitening',
-    title: '一键美白',
-    description: '自然美白，提升肌肤光泽',
+    id: 'ai-enlarge',
+    title: 'AI 图像放大',
+    description: '智能放大图片，保持清晰度',
+    icon: 'expand',
+    color: 'blue'
+  },
+  {
+    id: 'easy-use',
+    title: '简单易用',
+    description: '拖拽上传，一键处理，即时下载',
     icon: 'check',
     color: 'pink'
   }
@@ -170,7 +163,7 @@ export const PRICING_PLANS = [
     price: 0,
     credits: 3,
     period: 'day',
-    features: ['每日3次AI处理', '基础滤镜', '标准画质']
+    features: ['每日3次AI处理', 'AI背景移除', 'AI图片放大']
   },
   {
     id: 'basic',
@@ -178,7 +171,7 @@ export const PRICING_PLANS = [
     price: 9.9,
     credits: 10,
     period: 'once',
-    features: ['10次AI处理', '全部滤镜', '高清画质']
+    features: ['10次AI处理', 'AI背景移除', 'AI图片放大', '高清画质']
   },
   {
     id: 'standard',
@@ -186,7 +179,7 @@ export const PRICING_PLANS = [
     price: 39.9,
     credits: 50,
     period: 'once',
-    features: ['50次AI处理', '全部滤镜', '高清画质', '优先支持']
+    features: ['50次AI处理', 'AI背景移除', 'AI图片放大', '高清画质', '优先支持']
   },
   {
     id: 'premium',
@@ -194,7 +187,7 @@ export const PRICING_PLANS = [
     price: 69.9,
     credits: 100,
     period: 'once',
-    features: ['100次AI处理', '全部滤镜', '超高清画质', '优先支持', '批量处理']
+    features: ['100次AI处理', 'AI背景移除', 'AI图片放大', '超高清画质', '优先支持', '批量处理']
   }
 ]
 

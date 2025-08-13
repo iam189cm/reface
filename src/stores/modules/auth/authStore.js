@@ -236,6 +236,62 @@ export const useAuthStore = defineStore('auth', {
       // 免费用户检查配额
       return this.credits.remaining >= creditsNeeded
     },
+
+    /**
+     * 🆕 通用权限检查方法 can()
+     */
+    can(action, resource = null, context = {}) {
+      // 未认证用户的权限检查
+      if (!this.isAuthenticated) {
+        const guestPermissions = ['view_public', 'use_trial']
+        return guestPermissions.includes(action)
+      }
+      
+      // 管理员拥有所有权限
+      if (this.isAdmin) return true
+      
+      // 根据用户类型和操作类型检查权限
+      const userPermissions = this._getUserPermissions()
+      
+      // 检查基本权限
+      if (userPermissions.includes(action) || userPermissions.includes('*')) {
+        return true
+      }
+      
+      // 特殊的AI功能权限检查
+      if (action.startsWith('use_ai_')) {
+        const creditsNeeded = context.credits || 1
+        return this.canUseAIFeature(action, creditsNeeded)
+      }
+      
+      // 配额相关权限
+      if (action === 'consume_credits') {
+        const creditsNeeded = context.credits || 1
+        return this.credits.remaining >= creditsNeeded
+      }
+      
+      // 用户管理权限（仅管理员）
+      if (action.startsWith('admin_')) {
+        return this.isAdmin
+      }
+      
+      return false
+    },
+
+    /**
+     * 🆕 确保权限（用于路由守卫）
+     */
+    ensurePermission(action, resource = null, context = {}) {
+      if (!this.can(action, resource, context)) {
+        const error = new Error(`权限不足：无法执行 ${action}`)
+        error.code = 'PERMISSION_DENIED'
+        error.requiredPermission = action
+        error.userType = this.userType
+        error.isAuthenticated = this.isAuthenticated
+        throw error
+      }
+      return true
+    },
     
     // ==========  内部方法  ==========
     

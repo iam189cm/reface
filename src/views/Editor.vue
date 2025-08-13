@@ -4,30 +4,17 @@
     <EmptyImagePrompt v-if="!hasImage" />
 
     <!-- 编辑界面 -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-      <!-- 图片预览区域 - 在大屏幕上居中，小屏幕上在上方 -->
-      <div class="col-span-1 md:col-span-2 lg:col-span-2 lg:order-2 order-1">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      <!-- 图片预览区域 - 居中 -->
+      <div class="col-span-1 md:col-span-1 lg:col-span-2 lg:order-1 order-1">
         <ImageCanvas 
           @ai-result="handleAiResult"
           @ai-error="handleAiError"
         />
       </div>
 
-      <!-- 基础调整控制面板 - 左侧 -->
-      <div class="col-span-1 md:col-span-1 lg:col-span-1 lg:order-1 order-2 md:order-2">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-          <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
-            </svg>
-            基础调整
-          </h3>
-          <FilterControlPanel />
-        </div>
-      </div>
-
       <!-- AI功能控制面板 - 右侧 -->
-      <div class="col-span-1 md:col-span-1 lg:col-span-1 lg:order-3 order-3 md:order-3">
+      <div class="col-span-1 md:col-span-1 lg:col-span-1 lg:order-2 order-2 md:order-2">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center">
             <svg class="w-5 h-5 mr-2 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
@@ -62,7 +49,6 @@ import EmptyImagePrompt from '../components/feature/EmptyImagePrompt.vue'
 import ImageCanvas from '../components/feature/ImageCanvas.vue'
 import AIImageEnlarger from '../components/feature/AIImageEnlarger.vue'
 import AIBackgroundRemover from '../components/feature/AIBackgroundRemover.vue'
-import FilterControlPanel from '../components/feature/FilterControlPanel.vue'
 import { useImageEditor } from '../composables/useImageEditor.js'
 
 export default {
@@ -71,8 +57,7 @@ export default {
     EmptyImagePrompt,
     ImageCanvas,
     AIImageEnlarger,
-    AIBackgroundRemover,
-    FilterControlPanel
+    AIBackgroundRemover
   },
   setup() {
     const {

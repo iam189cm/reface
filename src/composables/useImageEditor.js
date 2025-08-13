@@ -6,7 +6,7 @@
 import { ref, computed, nextTick } from 'vue'
 import { useImageStore } from '../stores/imageStore.js'
 import { useEditorStore } from '../stores/editorStore.js'
-import { useNotification } from './useNotification.js'
+import { useNotification } from './ui/useNotification.js'
 
 export function useImageEditor() {
   const imageStore = useImageStore()
@@ -18,10 +18,7 @@ export function useImageEditor() {
 
   // 计算属性
   const imageData = computed(() => imageStore.currentImage)
-  const adjustments = computed(() => editorStore.adjustments)
-  const hasChanges = computed(() => editorStore.hasChanges)
-  const canUndo = computed(() => editorStore.canUndo)
-  const canRedo = computed(() => editorStore.canRedo)
+
 
   // Canvas样式
   const canvasStyle = computed(() => ({
@@ -72,9 +69,7 @@ export function useImageEditor() {
         img.src = getImageUrl()
       })
       
-      // 应用初始滤镜
-      await nextTick()
-      applyAdjustments()
+      // 图片加载完成
       
     } catch (error) {
       console.error('图片加载失败:', error)
@@ -117,38 +112,7 @@ export function useImageEditor() {
     return imageStore.imageUrl || imageData.value?.url
   }
 
-  // 应用调整参数
-  const applyAdjustments = () => {
-    if (!canvas.value || !originalImage.value) {
-      return
-    }
-    
-    editorStore.applyFiltersToCanvas()
-  }
 
-  // 更新单个调整参数
-  const updateAdjustment = (key, value) => {
-    editorStore.updateAdjustment(key, value)
-    applyAdjustments()
-  }
-
-  // 重置所有调整
-  const resetAll = () => {
-    editorStore.resetAllAdjustments()
-    applyAdjustments()
-  }
-
-  // 撤销操作
-  const undo = () => {
-    editorStore.undo()
-    applyAdjustments()
-  }
-
-  // 重做操作
-  const redo = () => {
-    editorStore.redo()
-    applyAdjustments()
-  }
 
   // 下载图片
   const downloadImage = () => {
@@ -246,10 +210,6 @@ export function useImageEditor() {
     
     // 计算属性
     imageData,
-    adjustments,
-    hasChanges,
-    canUndo,
-    canRedo,
     canvasStyle,
     
     // 状态
@@ -260,11 +220,6 @@ export function useImageEditor() {
     initializeEditor,
     loadImageToCanvas,
     getImageUrl,
-    applyAdjustments,
-    updateAdjustment,
-    resetAll,
-    undo,
-    redo,
     downloadImage,
     onImageLoad,
     onImageError,

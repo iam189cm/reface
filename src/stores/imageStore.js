@@ -42,6 +42,9 @@ export const useImageStore = defineStore('image', {
     // 是否有图片
     hasImage: (state) => !!state.currentImage,
     
+    // 原始图片信息
+    originalImage: (state) => state.currentImage,
+    
     // 图片URL（优先使用OSS URL）
     imageUrl: (state) => {
       if (state.ossInfo.url) return state.ossInfo.url
@@ -110,6 +113,92 @@ export const useImageStore = defineStore('image', {
     // 设置错误
     setError(error) {
       this.error = error
+    },
+
+    // 上传图片方法
+    async uploadImage(file) {
+      if (!file) {
+        throw new Error('文件不能为空')
+      }
+
+      // 验证文件类型
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error('不支持的文件格式')
+      }
+
+      // 验证文件大小 (默认最大12MB)
+      const maxSize = 12 * 1024 * 1024
+      if (file.size > maxSize) {
+        throw new Error('文件大小超过限制')
+      }
+
+      try {
+        this.setUploading(true)
+        this.setError(null)
+
+        // 创建文件URL用于预览
+        const imageUrl = URL.createObjectURL(file)
+        
+        // 获取图片尺寸
+        const { width, height } = await this.getImageDimensions(file)
+
+        // 设置图片数据
+        this.setCurrentImage({
+          url: imageUrl,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          width,
+          height
+        })
+
+        // 设置原始文件
+        this.setOriginalImageFile(file)
+
+        // 保存到session storage
+        this.saveToSession()
+
+        return {
+          success: true,
+          imageUrl,
+          metadata: {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            width,
+            height
+          }
+        }
+      } catch (error) {
+        this.setError(error.message)
+        throw error
+      } finally {
+        this.setUploading(false)
+      }
+    },
+
+    // 获取图片尺寸的辅助方法
+    getImageDimensions(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image()
+        const url = URL.createObjectURL(file)
+        
+        img.onload = () => {
+          URL.revokeObjectURL(url)
+          resolve({
+            width: img.naturalWidth,
+            height: img.naturalHeight
+          })
+        }
+        
+        img.onerror = () => {
+          URL.revokeObjectURL(url)
+          reject(new Error('无法加载图片'))
+        }
+        
+        img.src = url
+      })
     },
 
     // 清除图片数据

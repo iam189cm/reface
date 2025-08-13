@@ -201,8 +201,8 @@ import Button from '../ui/Button.vue'
 import Slider from '../ui/Slider.vue'
 import TrialStatusPanel from './TrialStatusPanel.vue'
 import UpgradeModal from './UpgradeModal.vue'
-import { useAIServices } from '../../composables/useAIServices.js'
-import { useTrialManager } from '../../composables/useTrialManager.js'
+import { useAIServices } from '../../composables/business/useAIServices.js'
+import { useTrialManager } from '../../composables/business/useTrialManager.js'
 import { VANCE_AI_CONFIG } from '../../constants/apiConstants.js'
 
 export default {

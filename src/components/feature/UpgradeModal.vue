@@ -10,37 +10,37 @@
         </div>
         
         <!-- 标题 -->
-        <h3 class="text-lg font-bold text-gray-900 mb-2">解锁更多功能</h3>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $t('trial.upgrade.title') }}</h3>
         <p class="text-gray-600 text-sm mb-4">
-          升级后可享受无限次数的 AI 背景移除功能
+          {{ $t('trial.upgrade.description') }}
         </p>
         
         <!-- 功能列表 -->
         <div class="space-y-2 mb-4">
-          <FeatureItem text="无限次 AI 背景移除" />
-          <FeatureItem text="高质量图片处理" />
-          <FeatureItem text="优先客服支持" />
+          <FeatureItem :text="$t('trial.upgrade.features.unlimited')" />
+          <FeatureItem :text="$t('trial.upgrade.features.quality')" />
+          <FeatureItem :text="$t('trial.upgrade.features.support')" />
         </div>
         
         <!-- 定价信息 -->
         <div class="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-4 mb-4">
-          <div class="text-2xl font-bold text-gray-900 mb-1">¥9.9</div>
-          <div class="text-sm text-gray-600">体验包 / 10张处理</div>
+          <div class="text-2xl font-bold text-gray-900 mb-1">{{ $t('trial.upgrade.pricing.amount') }}</div>
+          <div class="text-sm text-gray-600">{{ $t('trial.upgrade.pricing.description') }}</div>
         </div>
         
         <!-- 操作按钮 -->
         <div class="space-y-2">
           <Button type="primary" block @click="handleUpgrade">
-            立即升级
+            {{ $t('trial.upgrade.buttons.upgrade') }}
           </Button>
           <Button type="ghost" block @click="$emit('close')">
-            暂不升级
+            {{ $t('trial.upgrade.buttons.notNow') }}
           </Button>
         </div>
         
         <!-- 说明文本 -->
         <p class="text-xs text-gray-500 mt-3">
-          支付功能开发中，敬请期待
+          {{ $t('trial.upgrade.paymentNote') }}
         </p>
       </div>
     </div>
@@ -49,7 +49,7 @@
 
 <script>
 import Button from '../ui/Button.vue'
-import { useNotification } from '../../composables/useNotification.js'
+import { useI18nNotification } from '@/utils/i18nNotification.js'
 
 // 功能项组件
 const FeatureItem = {
@@ -74,12 +74,12 @@ export default {
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const { showInfo } = useNotification()
+    const { showPaymentDeveloping } = useI18nNotification()
     
     // 处理升级
     const handleUpgrade = () => {
       // 这里将来集成支付功能
-      showInfo('支付功能开发中，敬请期待！')
+      showPaymentDeveloping()
       emit('close')
     }
     

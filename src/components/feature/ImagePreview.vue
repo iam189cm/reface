@@ -54,7 +54,7 @@ import { useRouter } from 'vue-router'
 import Button from '../ui/Button.vue'
 import { useImageStore } from '../../stores/imageStore.js'
 import { useImageUpload } from '../../composables/useImageUpload.js'
-import { useNotification } from '../../composables/useNotification.js'
+import { useNotification } from '../../composables/ui/useNotification.js'
 
 // 图片信息组件
 const ImageInfo = {
