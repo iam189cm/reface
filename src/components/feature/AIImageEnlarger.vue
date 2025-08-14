@@ -201,9 +201,9 @@ import Button from '../ui/Button.vue'
 import Slider from '../ui/Slider.vue'
 import TrialStatusPanel from './TrialStatusPanel.vue'
 import UpgradeModal from './UpgradeModal.vue'
-import { useAIServices } from '../../composables/business/useAIServices.js'
+import { useNeroAIServices } from '../../composables/business/useNeroAIServices.js'
 import { useTrialManager } from '../../composables/business/useTrialManager.js'
-import { VANCE_AI_CONFIG } from '../../constants/apiConstants.js'
+import { SERVICE_CAPABILITIES } from '../../services/nero-ai/index.ts'
 
 export default {
   name: 'AIImageEnlarger',
@@ -224,91 +224,102 @@ export default {
   emits: ['result', 'error'],
   
   setup(props, { emit }) {
-    const { enlargeImage, isProcessing, processingProgress, processingMessage } = useAIServices()
+    const neroAI = useNeroAIServices()
     const { canUseTrial } = useTrialManager()
     
     // 响应式数据
     const showUpgradeModal = ref(false)
     const showAdvanced = ref(false)
-    const apiToken = ref('')
+    const selectedService = ref('ImageUpscaler:Standard')
+    const upscalingRate = ref(2)
+    const qualityFactor = ref(95)
     
-    // 放大参数
-    const selectedScale = ref('2x')
-    const suppressNoise = ref(VANCE_AI_CONFIG.DEFAULT_PARAMS.suppress_noise)
-    const removeBlur = ref(VANCE_AI_CONFIG.DEFAULT_PARAMS.remove_blur)
-    
-    // 获取放大选项
-    const scaleOptions = computed(() => VANCE_AI_CONFIG.SCALE_OPTIONS)
+    // 获取放大选项 (基于 Nero AI 服务能力)
+    const scaleOptions = computed(() => {
+      const upscalerServices = Object.keys(SERVICE_CAPABILITIES).filter(key => 
+        key.startsWith('ImageUpscaler')
+      )
+      
+      const options = {}
+      upscalerServices.forEach(serviceType => {
+        const service = SERVICE_CAPABILITIES[serviceType]
+        const key = serviceType.split(':')[1] || 'Standard'
+        options[key.toLowerCase()] = {
+          name: service.name,
+          description: service.description,
+          credit: service.credit_cost,
+          serviceType: serviceType
+        }
+      })
+      
+      return options
+    })
     
     // 开发环境判断
     const isDevelopment = computed(() => {
-      return process.env.NODE_ENV === 'development'
+      return import.meta.env.DEV
     })
     
-    // 检查是否可以使用指定放大倍数
+    // 检查是否可以使用指定服务
     const canUseScale = (scale) => {
-      // 试用用户只能使用2x放大
-      const allowedScales = VANCE_AI_CONFIG.TRIAL_RESTRICTIONS.ALLOWED_SCALES
-      return allowedScales.includes(scale) || false // 这里应该检查用户是否为付费用户
+      // 试用用户可以使用所有服务，但受配额限制
+      return canUseTrial.value
     }
     
     // 选择放大倍数
     const selectScale = (scale) => {
       if (canUseScale(scale)) {
-        selectedScale.value = scale
+        const option = scaleOptions.value[scale]
+        selectedService.value = option.serviceType
       }
     }
     
     // 是否需要升级
     const needsUpgrade = computed(() => {
-      return !canUseScale(selectedScale.value)
+      return false // 目前所有服务都对试用用户开放
     })
     
     // 是否可以处理
     const canProcess = computed(() => {
       return props.imageFile && 
              canUseTrial.value && 
-             !isProcessing.value && 
-             canUseScale(selectedScale.value)
+             !neroAI.processingInfo.value.isProcessing
     })
     
     // 按钮类型
     const buttonType = computed(() => {
-      if (!canUseTrial.value || needsUpgrade.value) return 'secondary'
-      if (isProcessing.value) return 'primary'
+      if (!canUseTrial.value) return 'secondary'
+      if (neroAI.processingInfo.value.isProcessing) return 'primary'
       return canProcess.value ? 'primary' : 'secondary'
     })
     
     // 按钮文本
     const buttonText = computed(() => {
-      if (isProcessing.value) return '正在处理...'
+      if (neroAI.processingInfo.value.isProcessing) return '正在处理...'
       if (!props.imageFile) return '请先选择图片'
-      if (needsUpgrade.value) return '需要升级解锁'
       if (!canUseTrial.value) return '试用次数已用完'
       
-      const option = scaleOptions.value[selectedScale.value]
-      return `开始${option.name}处理`
+      const serviceInfo = SERVICE_CAPABILITIES[selectedService.value]
+      return `开始${serviceInfo?.name || '图像放大'}处理`
     })
     
     // 获取预估处理时间
     const getEstimatedTime = (scale) => {
-      const timeMap = {
-        '2x': '15-20秒',
-        '4x': '25-35秒', 
-        '8x': '40-60秒'
-      }
-      return timeMap[scale] || '未知'
+      const option = scaleOptions.value[scale]
+      const serviceInfo = SERVICE_CAPABILITIES[option?.serviceType]
+      const time = serviceInfo?.average_processing_time || 30000
+      return `${Math.round(time / 1000)}秒`
     }
     
     // 获取预估剩余时间
     const getEstimatedRemainingTime = () => {
-      if (!isProcessing.value) return '0秒'
+      if (!neroAI.processingInfo.value.isProcessing) return '0秒'
       
-      const totalTime = {
-        '2x': 20, '4x': 30, '8x': 50
-      }[selectedScale.value] || 20
+      const progress = neroAI.processingInfo.value.progress || 0
+      const serviceInfo = SERVICE_CAPABILITIES[selectedService.value]
+      const totalTime = (serviceInfo?.average_processing_time || 30000) / 1000
       
-      const remainingPercent = (100 - processingProgress.value) / 100
+      const remainingPercent = (100 - progress) / 100
       const remainingSeconds = Math.ceil(totalTime * remainingPercent)
       
       return `${remainingSeconds}秒`
@@ -316,29 +327,27 @@ export default {
     
     // 重置高级参数
     const resetAdvancedParams = () => {
-      suppressNoise.value = VANCE_AI_CONFIG.DEFAULT_PARAMS.suppress_noise
-      removeBlur.value = VANCE_AI_CONFIG.DEFAULT_PARAMS.remove_blur
+      upscalingRate.value = 2
+      qualityFactor.value = 95
     }
     
     // 处理图像放大
     const handleEnlargeImage = async () => {
       if (!canProcess.value) return
       
-      const params = {
-        scale: selectedScale.value,
-        suppress_noise: suppressNoise.value,
-        remove_blur: removeBlur.value
-      }
-      
       try {
-        const success = await enlargeImage(
+        const success = await neroAI.upscaleImage(
           props.imageFile,
-          params,
-          (resultBlob) => {
-            emit('result', resultBlob)
+          (result) => {
+            emit('result', result)
           },
           (error) => {
             emit('error', error)
+          },
+          {
+            mode: selectedService.value,
+            scale: upscalingRate.value,
+            quality: qualityFactor.value
           }
         )
         
@@ -350,11 +359,15 @@ export default {
       }
     }
     
-    // 监听放大倍数变化，自动切换到允许的选项
-    watch(selectedScale, (newScale) => {
-      if (!canUseScale(newScale)) {
-        // 如果选择了不被允许的倍数，自动切换到2x
-        selectedScale.value = '2x'
+    // 监听服务变化，自动切换参数
+    watch(selectedService, (newService) => {
+      const serviceInfo = SERVICE_CAPABILITIES[newService]
+      if (serviceInfo?.parameters) {
+        // 根据服务能力设置默认参数
+        const upscalingParam = serviceInfo.parameters.find(p => p.name === 'upscaling_rate')
+        if (upscalingParam) {
+          upscalingRate.value = upscalingParam.default || 2
+        }
       }
     })
     
@@ -362,10 +375,9 @@ export default {
       // 响应式数据
       showUpgradeModal,
       showAdvanced,
-      apiToken,
-      selectedScale,
-      suppressNoise,
-      removeBlur,
+      selectedService,
+      upscalingRate,
+      qualityFactor,
       
       // 计算属性
       scaleOptions,
@@ -375,9 +387,7 @@ export default {
       canUseTrial,
       buttonType,
       buttonText,
-      isProcessing,
-      processingProgress,
-      processingMessage,
+      processingInfo: neroAI.processingInfo,
       
       // 方法
       canUseScale,

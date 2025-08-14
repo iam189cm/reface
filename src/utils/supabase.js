@@ -97,8 +97,7 @@ export const USER_TYPE_CONFIGS = {
 
 // 服务类型枚举
 export const SERVICE_TYPES = {
-  VANCE_AI: 'vance_ai',
-  REMOVE_BG: 'remove_bg',
+  NERO_AI: 'nero_ai',
   IMAGE_FILTERS: 'image_filters'
 }
 

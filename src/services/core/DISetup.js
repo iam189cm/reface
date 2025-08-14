@@ -7,8 +7,7 @@ import { ServiceContainer } from './ServiceContainer.js'
 import { ConfigService } from './ConfigService.js'
 import { ProgressManager } from './ProgressManager.js'
 import { HttpClient } from '../network/HttpClient.js'
-import { RemoveBackgroundService } from '../ai/removeBackground/RemoveBackgroundService.js'
-import { VanceAIService } from '../ai/vanceAI/VanceAIService.js'
+import { NeroAIService, TaskManager, ResultProcessor } from '../nero-ai/index.ts'
 
 /**
  * 设置依赖注入容器
@@ -68,11 +67,8 @@ export function setupDependencyInjection(options = {}) {
   container.register(
     'aiServiceContainer',
     () => ({
-      removeBackground: container.get('removeBackgroundService'),
-      enlargeImage: container.get('vanceAIService'),
-      // 未来可以添加更多AI服务
-      // faceEnhance: container.get('faceEnhanceService'),
-      // styleTransfer: container.get('styleTransferService'),
+      neroAI: container.get('neroAIService'),
+      // 所有AI功能现在通过Nero AI统一处理
     }),
     true
   )
@@ -102,40 +98,40 @@ export function setupDependencyInjection(options = {}) {
  * @param {ServiceContainer} container - 服务容器
  */
 function registerRealServices(container) {
-  // Remove.bg 服务
+  // Nero AI 服务
   container.register(
-    'removeBackgroundService',
+    'neroAIService',
     () => {
       const config = container.get('configService')
-      const httpClient = container.get('httpClient')
-      const progressManager = container.get('progressManager')
-      
-      return new RemoveBackgroundService(
-        config.removeBackground,
-        httpClient,
-        progressManager
-      )
+      return new NeroAIService(config.neroAI)
     },
     true,
-    ['configService', 'httpClient', 'progressManager']
+    ['configService']
   )
   
-  // VanceAI 服务
+  // Nero AI 任务管理器
   container.register(
-    'vanceAIService',
+    'taskManager',
     () => {
-      const config = container.get('configService')
-      const httpClient = container.get('httpClient')
-      const progressManager = container.get('progressManager')
-      
-      return new VanceAIService(
-        config.vanceAI,
-        httpClient,
-        progressManager
-      )
+      const neroAI = container.get('neroAIService')
+      return new TaskManager(neroAI, 3) // 最多3个并发任务
     },
     true,
-    ['configService', 'httpClient', 'progressManager']
+    ['neroAIService']
+  )
+  
+  // Nero AI 结果处理器
+  container.register(
+    'resultProcessor',
+    () => {
+      return new ResultProcessor({
+        enabled: true,
+        ttl: 2 * 60 * 60 * 1000, // 2小时缓存
+        prefix: 'nero_ai_result_',
+        maxSize: 100 // 100MB缓存
+      })
+    },
+    true
   )
 }
 
@@ -144,67 +140,17 @@ function registerRealServices(container) {
  * @param {ServiceContainer} container - 服务容器
  */
 function registerMockServices(container) {
-  // Mock Remove.bg 服务
+  // Mock Nero AI 服务（所有AI功能通过Nero AI统一处理）
   container.register(
-    'removeBackgroundService',
-    () => new MockRemoveBackgroundService(),
-    true
-  )
-  
-  // Mock VanceAI 服务
-  container.register(
-    'vanceAIService',
-    () => new MockVanceAIService(),
+    'mockNeroAIService',
+    () => new MockNeroAIService(),
     true
   )
 }
 
-/**
- * Mock Remove.bg 服务（用于测试）
- */
-class MockRemoveBackgroundService {
-  async removeBackground(imageFile, onProgress = null) {
-    console.log('🧪 Mock: 移除背景', imageFile.name)
-    
-    if (onProgress) {
-      onProgress({ progress: 50, message: 'Mock处理中...' })
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      onProgress({ progress: 100, message: 'Mock处理完成' })
-    }
-    
-    // 返回一个模拟的Blob
-    return new Blob(['mock processed image'], { type: 'image/png' })
-  }
-  
-  async checkQuota() {
-    return {
-      success: true,
-      data: { credits: 999, type: 'mock' }
-    }
-  }
-}
 
-/**
- * Mock VanceAI 服务（用于测试）
- */
-class MockVanceAIService {
-  async enlargeImage(imageFile, onProgress = null, params = {}) {
-    console.log('🧪 Mock: 图像放大', imageFile.name, params)
-    
-    if (onProgress) {
-      onProgress({ progress: 25, message: 'Mock上传中...' })
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      onProgress({ progress: 50, message: 'Mock处理中...' })
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      onProgress({ progress: 100, message: 'Mock处理完成' })
-    }
-    
-    // 返回一个模拟的Blob
-    return new Blob(['mock enlarged image'], { type: 'image/jpeg' })
-  }
-}
+
+
 
 /**
  * 创建开发环境的依赖注入容器

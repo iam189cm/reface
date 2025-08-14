@@ -14,10 +14,14 @@ import ForgotPassword from './views/auth/ForgotPassword.vue'
 import Admin from './views/Admin.vue'
 import Pricing from './views/Pricing.vue'
 import Help from './views/Help.vue'
+import Solutions from './views/Solutions.vue'
+import Showcase from './views/Showcase.vue'
 
 const routes = [
   { path: '/', name: 'home', component: Home },
   { path: '/editor', name: 'editor', component: Editor },
+  { path: '/solutions', name: 'solutions', component: Solutions },
+  { path: '/showcase', name: 'showcase', component: Showcase },
   { path: '/pricing', name: 'pricing', component: Pricing },
   { path: '/help', name: 'help', component: Help },
   { path: '/auth/login', name: 'login', component: Login },

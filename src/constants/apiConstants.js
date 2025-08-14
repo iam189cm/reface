@@ -4,20 +4,17 @@
 
 // API 端点
 export const API_ENDPOINTS = {
-  // Remove.bg API
-  REMOVE_BG: 'https://api.remove.bg/v1.0/removebg',
-  REMOVE_BG_ACCOUNT: 'https://api.remove.bg/v1.0/account',
-  
-  // VanceAI API
-  VANCE_AI_UPLOAD: 'https://api-service.vanceai.com/web_api/v1/upload',
-  VANCE_AI_TRANSFORM: 'https://api-service.vanceai.com/web_api/v1/transform',
-  VANCE_AI_PROGRESS: 'https://api-service.vanceai.com/web_api/v1/progress',
+  // Nero AI API
+  NERO_AI_BASE: 'https://api.nero.com/biz/api',
+  NERO_AI_TASK: 'https://api.nero.com/biz/api/task',
+  NERO_AI_ACCOUNT: 'https://api.nero.com/biz/api/account',
   
   // 内部 API
   UPLOAD_OSS: '/api/upload-oss',
   DELETE_OSS: '/api/delete-oss',
   
-  // 未来可能的 API
+  // 后端 API 路由
+  NERO_AI_PROXY: '/api/nero-ai',
   USER_AUTH: '/api/auth',
   PAYMENT: '/api/payment',
   ANALYTICS: '/api/analytics'
@@ -47,44 +44,67 @@ export const TIMEOUT_CONFIG = {
   QUICK: 5000          // 5秒
 }
 
-// Remove.bg API 配置
-export const REMOVE_BG_CONFIG = {
+// Nero AI API 配置
+export const NERO_AI_CONFIG = {
+  BASE_URL: 'https://api.nero.com/biz/api',
+  
+  // 支持的服务类型
+  SERVICE_TYPES: {
+    IMAGE_UPSCALER_STANDARD: 'ImageUpscaler:Standard',
+    IMAGE_UPSCALER_PHOTOGRAPH: 'ImageUpscaler:Photograph',
+    IMAGE_UPSCALER_ANIME: 'ImageUpscaler:Anime',
+    IMAGE_UPSCALER_FACE: 'ImageUpscaler:FaceEnhancement',
+    BACKGROUND_REMOVER: 'BackgroundRemover',
+    BACKGROUND_CHANGER: 'BackgroundChanger',
+    SCRATCH_FIX: 'ScratchFix',
+    COLORIZE_PHOTO: 'ColorizePhoto',
+    FACE_RESTORATION: 'FaceRestoration',
+    FACE_DETECTION: 'FaceDetection',
+    IMAGE_DENOISER: 'ImageDenoiser',
+    IMAGE_COMPRESSOR: 'ImageCompressor',
+    CARTOON: 'Cartoon'
+  },
+  
   // 图片大小选项
   SIZES: {
-    PREVIEW: 'preview',     // 0.25 megapixel
-    SMALL: 'small',         // 0.25 megapixel
-    REGULAR: 'regular',     // 4 megapixel
-    MEDIUM: 'medium',       // 10 megapixel
-    HD: 'hd',              // 25 megapixel
-    FULL: 'full'           // original resolution
+    PREVIEW: 'preview',
+    SMALL: 'small',
+    REGULAR: 'regular',
+    MEDIUM: 'medium',
+    HD: 'hd',
+    FULL: 'full'
   },
   
-  // 图片格式
-  FORMATS: {
-    PNG: 'png',
-    JPG: 'jpg',
-    ZIP: 'zip'
-  },
-  
-  // 图片类型
-  TYPES: {
+  // 图片类型提示
+  TYPE_HINTS: {
     AUTO: 'auto',
     PERSON: 'person',
     PRODUCT: 'product',
     CAR: 'car'
   },
   
-  // 默认配置
-  DEFAULT_SIZE: 'preview',
-  DEFAULT_TYPE: 'auto',
-  DEFAULT_FORMAT: 'png',
+  // 放大倍数
+  UPSCALING_RATES: {
+    X2: 2,
+    X4: 4
+  },
+  
+  // 默认参数
+  DEFAULT_PARAMS: {
+    size: 'preview',
+    type_hint: 'auto',
+    upscaling_rate: 2,
+    quality_factor: 95
+  },
   
   // 错误码映射
   ERROR_CODES: {
-    400: 'Invalid image format or corrupted image',
-    402: 'Insufficient credits',
-    403: 'Invalid API key',
-    429: 'Rate limit exceeded'
+    11002: 'API密钥无效',
+    11003: 'API密钥已过期',
+    11004: 'API配额不足',
+    400: '请求参数错误',
+    403: '访问被拒绝',
+    429: '请求频率过高'
   }
 }
 
@@ -180,69 +200,8 @@ export const RESPONSE_FORMAT = {
   }
 }
 
-// VanceAI API 配置
-export const VANCE_AI_CONFIG = {
-  // 图像放大模型
-  ENLARGE_MODEL: 'EnlargeStable',
-  
-  // 放大倍数选项
-  SCALE_OPTIONS: {
-    '2x': { 
-      scale: '2x', 
-      credit: 1, 
-      name: '2倍放大',
-      description: '适合日常使用，快速处理'
-    },
-    '4x': { 
-      scale: '4x', 
-      credit: 2, 
-      name: '4倍放大',
-      description: '高清处理，细节丰富'
-    },
-    '8x': { 
-      scale: '8x', 
-      credit: 4, 
-      name: '8倍放大',
-      description: '超高清处理，专业级效果'
-    }
-  },
-  
-  // 默认参数
-  DEFAULT_PARAMS: {
-    suppress_noise: 26,    // 降噪强度
-    remove_blur: 26,       // 去模糊强度
-    scale: '2x'           // 默认放大倍数
-  },
-  
-  // 参数范围
-  PARAM_RANGES: {
-    suppress_noise: { min: 0, max: 100, step: 1 },
-    remove_blur: { min: 0, max: 100, step: 1 }
-  },
-  
-  // 处理状态
-  JOB_STATUS: {
-    WAITING: 'waiting',
-    PROCESS: 'process', 
-    FINISH: 'finish',
-    FATAL: 'fatal',
-    WEBHOOK: 'webhook'
-  },
-  
-  // 轮询配置
-  POLLING: {
-    INTERVAL: 2000,        // 2秒轮询一次
-    MAX_ATTEMPTS: 150,     // 最多轮询150次（5分钟）
-    TIMEOUT: 300000        // 5分钟超时
-  },
-  
-  // 试用限制
-  TRIAL_RESTRICTIONS: {
-    ALLOWED_SCALES: ['2x'],           // 试用用户只能使用2x
-    DAILY_CREDITS: 3,                 // 每日3个credit
-    PREMIUM_SCALES: ['4x', '8x']      // 付费用户专享
-  }
-}
+
+
 
 // 缓存配置
 export const CACHE_CONFIG = {

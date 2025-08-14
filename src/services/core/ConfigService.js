@@ -10,35 +10,20 @@ export class ConfigService {
   
   // ==========  AI 服务配置  ==========
   
-  /** Remove.bg API 配置 */
-  get removeBackground() {
+  /** Nero AI API 配置 */
+  get neroAI() {
     return {
-      apiKey: this.env.VITE_REMOVE_BG_API_KEY,
-      apiUrl: 'https://api.remove.bg/v1.0/removebg',
-      maxFileSize: 12 * 1024 * 1024, // 12MB
-      supportedFormats: ['image/jpeg', 'image/png', 'image/webp']
-    }
-  }
-  
-  /** VanceAI API 配置 */
-  get vanceAI() {
-    return {
-      apiToken: this.env.VITE_VANCE_AI_API_TOKEN,
-      endpoints: {
-        upload: 'https://api-service.vanceai.com/web_api/v1/upload',
-        transform: 'https://api-service.vanceai.com/web_api/v1/transform',
-        progress: 'https://api-service.vanceai.com/web_api/v1/progress'
-      },
-      defaultParams: {
-        scale: '2x',
-        suppress_noise: 50,
-        remove_blur: 30
-      },
-      polling: {
-        interval: 3000, // 3秒
-        maxAttempts: 40,
-        timeout: 120000 // 2分钟
-      }
+      apiKey: this.env.VITE_NERO_AI_API_KEY,
+      baseUrl: 'https://api.nero.com/biz/api',
+      timeout: 120000, // 2分钟
+      maxRetries: 3,
+      webhookUrl: this.env.VITE_NERO_AI_WEBHOOK_URL || '',
+      maxFileSize: 50 * 1024 * 1024, // 50MB
+      supportedFormats: [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 
+        'image/webp', 'image/jfif', 'image/jfi', 'image/jpe', 
+        'image/jif', 'image/ico', 'image/heic', 'image/heif'
+      ]
     }
   }
   
@@ -88,8 +73,17 @@ export class ConfigService {
     return {
       dailyQuota: 3,
       features: {
-        backgroundRemoval: { quota: 3, creditCost: 1 },
-        imageEnlarge: { quota: 3, creditCost: 2 }
+        'BackgroundRemover': { quota: 3, creditCost: 1 },
+        'ImageUpscaler:Standard': { quota: 3, creditCost: 1 },
+        'ImageUpscaler:Photograph': { quota: 2, creditCost: 1 },
+        'ImageUpscaler:Anime': { quota: 2, creditCost: 1 },
+        'ImageUpscaler:FaceEnhancement': { quota: 2, creditCost: 1 },
+        'FaceRestoration': { quota: 2, creditCost: 1 },
+        'ImageDenoiser': { quota: 3, creditCost: 1 },
+        'ScratchFix': { quota: 2, creditCost: 1 },
+        'ColorizePhoto': { quota: 1, creditCost: 2 },
+        'FaceDetection': { quota: 5, creditCost: 0.5 },
+        'ImageCompressor': { quota: 5, creditCost: 0.5 }
       }
     }
   }
@@ -104,12 +98,8 @@ export class ConfigService {
     const errors = []
     
     // AI服务配置验证
-    if (!this.removeBackground.apiKey || this.removeBackground.apiKey === 'your_remove_bg_api_key_here') {
-      errors.push('Missing or invalid VITE_REMOVE_BG_API_KEY')
-    }
-    
-    if (!this.vanceAI.apiToken || this.vanceAI.apiToken === 'your_vance_ai_api_token_here') {
-      errors.push('Missing or invalid VITE_VANCE_AI_API_TOKEN')
+    if (!this.neroAI.apiKey || this.neroAI.apiKey === 'your_nero_ai_api_key_here') {
+      errors.push('Missing or invalid VITE_NERO_AI_API_KEY')
     }
     
     // 数据库配置验证

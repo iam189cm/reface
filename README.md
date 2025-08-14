@@ -23,7 +23,7 @@ npm install
 
 ### 开发环境
 ```bash
-npm run dev          # 启动开发服务器 (localhost:3000)
+npm run dev          # 启动开发服务器 (localhost:5173)
 npm run type-check   # TypeScript类型检查
 npm run lint         # ESLint代码检查
 ```

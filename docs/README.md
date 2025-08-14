@@ -14,7 +14,7 @@ npm install
 
 # 启动开发服务器
 npm run dev
-# 访问: http://localhost:3000
+# 访问: http://localhost:5173
 
 # 构建生产版本
 npm run build
@@ -261,8 +261,8 @@ reface/
 
 ### 本地调试流程
 1. **环境配置**: 复制 `env.example` 为 `.env.local` 并配置API密钥
-2. **启动开发环境**: `npm run dev` (端口3000)
-3. **实时预览**: http://localhost:3000
+2. **启动开发环境**: `npm run dev` (端口5173)
+3. **实时预览**: http://localhost:5173
 4. **API代理**: API请求自动代理到生产环境 (https://reface.dataechotech.com)
 5. **功能测试**: 运行 `npm run test` 执行单元测试
 6. **构建验证**: `npm run build` 确保无错误
@@ -337,7 +337,7 @@ npm install
 
 **端口冲突问题**：
 ```bash
-# 如果3000端口被占用，可以修改vite.config.js中的端口配置
+# 如果5173端口被占用，可以修改vite.config.js中的端口配置
 # 或者使用以下命令指定端口
 npm run dev -- --port 3001
 ```
@@ -367,7 +367,7 @@ npm run test:coverage
 
 | 命令 | 说明 |
 |------|------|
-| `npm run dev` | 启动开发服务器 (端口3000) |
+| `npm run dev` | 启动开发服务器 (端口5173) |
 | `npm start` | 启动开发服务器的别名 |
 | `npm run build` | 构建生产版本 |
 | `npm run preview` | 预览构建结果 |

@@ -96,7 +96,7 @@ export const BREAKPOINTS = {
 
 // API 相关常量
 export const API = {
-  REMOVE_BG_URL: 'https://api.remove.bg/v1.0/removebg',
+
   OSS_UPLOAD_ENDPOINT: '/api/upload-oss',
   REQUEST_TIMEOUT: 30000 // 30秒
 }
@@ -133,7 +133,7 @@ export const LOADING_MESSAGES = {
 // 功能特色数据
 export const FEATURES = [
   {
-    id: 'ai-remove-bg',
+    id: 'ai-background-remover',
     title: 'AI 背景移除',
     description: '智能识别主体，一键移除背景',
     icon: 'magic',

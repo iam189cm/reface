@@ -66,9 +66,16 @@ export default {
     // 🆕 立即提供依赖注入服务给子组件
     provide('serviceContainer', container)
     provide('configService', container.get('configService'))
-    provide('aiServices', container.get('aiServiceContainer'))
+    provide('neroAIService', container.get('neroAIService'))
+    provide('taskManager', container.get('taskManager'))
+    provide('resultProcessor', container.get('resultProcessor'))
     provide('httpClient', container.get('httpClient'))
     provide('progressManager', container.get('progressManager'))
+    
+    // 为了向后兼容，保留旧的AI服务引用
+    provide('aiServices', {
+      neroAI: container.get('neroAIService')
+    })
     
     // 全局加载状态
     const isGlobalLoading = computed(() => appStore.isGlobalLoading || authStore.loading)
@@ -93,8 +100,8 @@ export default {
         
         // 统计AI服务数量（用于开发环境显示）
         if (isDevelopment.value) {
-          const aiServices = container.get('aiServiceContainer')
-          aiServicesCount.value = Object.keys(aiServices).length
+          const neroAIService = container.get('neroAIService')
+          aiServicesCount.value = neroAIService.getSupportedServices().length
           showDevInfo.value = true
           
           // 在控制台显示服务信息

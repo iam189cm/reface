@@ -30,7 +30,7 @@ export default defineConfig({
     __VUE_PROD_DEVTOOLS__: false
   },
   server: {
-    port: 3000,
+    port: 5173,
     host: '0.0.0.0',
     proxy: {
       // 代理 API 请求到 Vercel 线上环境进行测试
