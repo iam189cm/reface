@@ -68,14 +68,54 @@ export default {
 
   // 首页
   home: {
-    title: '让你的照片更美丽',
-    subtitle: '简单几步，轻松美化你的照片',
+    title: '专为女性打造的',
+    subtitle: 'AI图片美化工具',
+    description: '轻松去除背景、智能放大图片，让你的每一张照片都完美绽放',
+    startNow: '立即开始 - 免费试用',
+    viewDemo: '查看功能演示',
+    demoTitle: '看看处理效果',
+    demoSubtitle: '真实案例展示，效果一目了然',
     features: {
       aiBackground: 'AI背景移除',
       imageEnlarger: 'AI图像放大',
       filters: '美颜滤镜',
       realtime: '实时预览'
     }
+  },
+
+  // 效果演示
+  demo: {
+    removeBackground: 'AI背景移除效果',
+    removeBackgroundDesc: '智能识别主体，精准去除背景',
+    imageEnlarge: 'AI图片放大效果',
+    imageEnlargeDesc: '智能算法重建细节，清晰度大幅提升',
+    before: '处理前',
+    after: '处理后',
+    blurrySmall: '模糊 • 小尺寸',
+    clearLarge: '清晰 • 大尺寸'
+  },
+
+  // 工作流程
+  workflow: {
+    title: '简单三步，完美效果',
+    step1: '上传图片',
+    step1Desc: '选择需要处理的图片文件',
+    step2: '选择功能',
+    step2Desc: '选择背景移除或图片放大',
+    step3: '下载结果',
+    step3Desc: '处理完成后下载高质量图片'
+  },
+
+  // 信任保障
+  trust: {
+    title: '安全可靠的服务保障',
+    subtitle: '您的隐私和数据安全是我们的首要关注',
+    privacy: '隐私保护',
+    privacyDesc: '图片处理完成后自动删除\n不存储任何个人数据',
+    technology: '技术领先',
+    technologyDesc: '采用业界领先的AI算法\n持续优化处理效果',
+    service: '服务稳定',
+    serviceDesc: '7x24小时服务保障\n99.9%服务可用性'
   },
 
   // 认证相关

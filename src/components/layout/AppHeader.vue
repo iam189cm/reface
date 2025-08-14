@@ -1,195 +1,136 @@
 <template>
-  <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-pink-100">
+  <nav class="glass-effect shadow-lg border-b border-pink-100 sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4">
       <div class="flex items-center justify-between">
-        <!-- Logo和品牌 -->
-        <router-link to="/" class="flex items-center space-x-2">
-          <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span class="text-white font-bold text-sm">R</span>
+        <!-- Logo区域 -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <span class="text-white font-bold text-lg">R</span>
           </div>
-          <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-            Reface
-          </h1>
-        </router-link>
+          <h1 class="text-2xl font-bold gradient-text">Reface</h1>
+        </div>
         
-        <!-- 中间导航区域 -->
-        <div class="flex-1 flex justify-center">
-          <div class="flex items-center space-x-6">
-            <!-- AI工具下拉菜单 -->
-            <div class="relative" ref="aiToolsMenuRef">
-              <button
-                @click="toggleAIToolsMenu"
-                class="flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
-                :class="$route.path === '/editor' ? 'bg-pink-500 text-white shadow-lg' : 'text-gray-600 hover:text-pink-500'"
-              >
-                <span>{{ $t('navigation.aiTools') }}</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-              
-              <!-- AI工具下拉菜单 -->
-              <div
-                v-show="showAIToolsMenu"
-                class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-4 z-[9999]"
-              >
-                <div class="px-4 py-2 border-b border-gray-100">
-                  <h3 class="text-sm font-semibold text-gray-900">{{ $t('navigation.aiToolsTitle') }}</h3>
-                  <p class="text-xs text-gray-500 mt-1">{{ $t('navigation.aiToolsDesc') }}</p>
-                </div>
-                
-                <div class="py-2">
-                  <router-link
-                    to="/editor?tool=remove-bg"
-                    @click="closeAIToolsMenu"
-                    class="flex items-center px-4 py-3 hover:bg-pink-50 transition-colors group"
-                  >
-                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200">
-                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2M7 4H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">{{ $t('tools.removeBackground.name') }}</div>
-                      <div class="text-xs text-gray-500">{{ $t('tools.removeBackground.desc') }}</div>
-                    </div>
-                  </router-link>
-                  
-                  <router-link
-                    to="/editor?tool=enlarge"
-                    @click="closeAIToolsMenu"
-                    class="flex items-center px-4 py-3 hover:bg-pink-50 transition-colors group"
-                  >
-                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200">
-                      <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">{{ $t('tools.imageEnlarger.name') }}</div>
-                      <div class="text-xs text-gray-500">{{ $t('tools.imageEnlarger.desc') }}</div>
-                    </div>
-                  </router-link>
-                  
-                  <router-link
-                    to="/editor?tool=filter"
-                    @click="closeAIToolsMenu"
-                    class="flex items-center px-4 py-3 hover:bg-pink-50 transition-colors group"
-                  >
-                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200">
-                      <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">{{ $t('tools.imageFilter.name') }}</div>
-                      <div class="text-xs text-gray-500">{{ $t('tools.imageFilter.desc') }}</div>
-                    </div>
-                  </router-link>
-                </div>
-                
-                <div class="border-t border-gray-100 pt-2 mt-2">
-                  <router-link
-                    to="/editor"
-                    @click="closeAIToolsMenu"
-                    class="flex items-center justify-center px-4 py-2 mx-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-200"
-                  >
-                    {{ $t('navigation.startEditing') }}
-                  </router-link>
-                </div>
+        <!-- 中间导航 -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#home" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">首页</a>
+          <div class="relative group">
+            <a href="#features" class="text-gray-700 hover:text-pink-600 font-medium transition-colors flex items-center">
+              AI工具
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </a>
+            <!-- 下拉菜单 -->
+            <div class="absolute top-full left-0 mt-2 w-64 glass-effect rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div class="p-4">
+                <a href="#remove-bg" class="flex items-center p-3 hover:bg-pink-50 rounded-lg transition-colors">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="font-medium text-gray-900">背景移除</div>
+                    <div class="text-sm text-gray-500">一键去除图片背景</div>
+                  </div>
+                </a>
+                <a href="#enlarge" class="flex items-center p-3 hover:bg-pink-50 rounded-lg transition-colors">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="font-medium text-gray-900">图片放大</div>
+                    <div class="text-sm text-gray-500">AI无损放大图片</div>
+                  </div>
+                </a>
               </div>
             </div>
-            
-            <!-- 定价 -->
-            <NavLink to="/pricing" :active="$route.path === '/pricing'">
-              {{ $t('navigation.pricing') }}
-            </NavLink>
-            
-
-            <!-- 管理后台（仅管理员可见） -->
-            <NavLink v-if="authStore.isAdmin" to="/admin" :active="$route.path === '/admin'">
-              {{ $t('navigation.admin') }}
-            </NavLink>
-            
-            <!-- 帮助 -->
-            <NavLink to="/help" :active="$route.path === '/help'">
-              {{ $t('navigation.help') }}
-            </NavLink>
           </div>
+          <a href="#pricing" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">定价</a>
+          <a href="#help" class="text-gray-700 hover:text-pink-600 font-medium transition-colors">帮助</a>
         </div>
 
-        <!-- 右侧功能区域 -->
+        <!-- 右侧按钮 -->
         <div class="flex items-center space-x-4">
-          <!-- 语言切换器 -->
-          <LanguageSwitcher variant="header" />
-
-          <!-- 用户认证区域 -->
-            <!-- 未登录状态 -->
-            <template v-if="!authStore.isAuthenticated">
-              <router-link 
-                to="/auth/login"
-                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-pink-500 transition-colors"
-              >
-                {{ $t('navigation.login') }}
-              </router-link>
-              <router-link 
-                to="/auth/register"
-                class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium rounded-full hover:shadow-lg transition-all duration-200 hover:scale-105"
-              >
-                {{ $t('navigation.register') }}
-              </router-link>
-            </template>
-
-            <!-- 已登录状态 -->
-            <template v-else>
-              <!-- 用户类型标识 -->
-              <div class="flex items-center space-x-2">
-                <span 
-                  class="px-2 py-1 text-xs font-medium rounded-full"
-                  :class="userTypeBadgeClass"
-                >
-                  {{ userTypeConfig.displayName }}
-                </span>
-              </div>
-
-              <!-- 用户菜单 -->
-              <div class="relative" ref="userMenuRef">
-                <button
-                  @click="toggleUserMenu"
-                  class="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  <img
-                    :src="authStore.avatarUrl"
-                    :alt="authStore.displayName"
-                    class="w-8 h-8 rounded-full"
-                  />
-                  <span class="text-sm font-medium text-gray-700 hidden md:block">
-                    {{ authStore.displayName }}
-                  </span>
-                  <svg class="w-4 h-4 text-gray-500 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          <div class="hidden md:flex items-center space-x-2">
+            <span class="text-sm text-gray-600">中文</span>
+            <button class="w-6 h-6 text-gray-400 hover:text-gray-600 transition-colors">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+              </svg>
+            </button>
+          </div>
+          <button class="hidden md:block text-gray-600 hover:text-pink-600 font-medium transition-colors">登录</button>
+          <button class="hidden md:block bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all duration-200 hover:scale-105">
+            免费试用
+          </button>
+          <!-- 移动端菜单按钮 -->
+          <button
+            @click="toggleMobileMenu"
+            class="md:hidden text-gray-600 hover:text-pink-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 移动端菜单 -->
+      <div 
+        v-show="showMobileMenu"
+        class="md:hidden border-t border-pink-100 bg-white/95 backdrop-blur-md"
+      >
+        <div class="px-4 py-4 space-y-3">
+          <!-- AI工具区域 -->
+          <div class="border-l-3 border-pink-300 pl-4">
+            <div class="text-sm font-semibold text-gray-900 mb-2">AI工具</div>
+            <div class="space-y-2">
+              <a href="#remove-bg" @click="closeMobileMenu" class="flex items-center py-2 text-sm text-gray-600 hover:text-pink-600 transition-colors">
+                <div class="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2"></path>
                   </svg>
-                </button>
-
-                <!-- 下拉菜单 -->
-                <div
-                  v-show="showUserMenu"
-                  class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-                >
-                  <div class="px-4 py-2 border-b border-gray-100">
-                    <p class="text-sm font-medium text-gray-900">{{ authStore.displayName }}</p>
-                    <p class="text-xs text-gray-500">{{ authStore.userEmail }}</p>
-                  </div>
-                  
-                  <button
-                    @click="handleSignOut"
-                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                  >
-                    {{ $t('navigation.logout') }}
-                  </button>
                 </div>
-              </div>
-            </template>
+                背景移除
+              </a>
+              
+              <a href="#enlarge" @click="closeMobileMenu" class="flex items-center py-2 text-sm text-gray-600 hover:text-pink-600 transition-colors">
+                <div class="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5"></path>
+                  </svg>
+                </div>
+                图片放大
+              </a>
+            </div>
+          </div>
+          
+          <!-- 其他导航 -->
+          <div class="space-y-2">
+            <a href="#pricing" @click="closeMobileMenu" class="block py-2 text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors">定价</a>
+            <a href="#help" @click="closeMobileMenu" class="block py-2 text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors">帮助</a>
+          </div>
+          
+          <!-- 语言切换器 -->
+          <div class="pt-3 border-t border-pink-100">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-600">中文</span>
+              <button class="w-6 h-6 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- 用户认证区域 - 移动端 -->
+          <div class="pt-3 border-t border-pink-100 space-y-3">
+            <button class="block text-center py-2 text-sm font-medium text-gray-600 hover:text-pink-500 transition-colors">登录</button>
+            <button class="block w-full text-center py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium rounded-full hover:shadow-lg transition-all duration-200">免费试用</button>
+          </div>
         </div>
       </div>
     </div>
@@ -197,123 +138,27 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/modules/auth/authStore.js'
-import { useI18nNotification } from '@/utils/i18nNotification.js'
-import { USER_TYPE_CONFIGS } from '@/utils/supabase.js'
-import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue'
-
-// 导航链接组件
-const NavLink = {
-  props: {
-    to: String,
-    active: Boolean
-  },
-  template: `
-    <router-link 
-      :to="to"
-      class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
-      :class="active ? 'bg-pink-500 text-white shadow-lg' : 'text-gray-600 hover:text-pink-500'"
-    >
-      <slot></slot>
-    </router-link>
-  `
-}
+import { ref } from 'vue'
 
 export default {
   name: 'AppHeader',
-  components: {
-    NavLink,
-    LanguageSwitcher
-  },
   setup() {
-    const router = useRouter()
-    const authStore = useAuthStore()
-    const { showLogoutSuccess } = useI18nNotification()
+    const showMobileMenu = ref(false)
     
-    const showUserMenu = ref(false)
-    const userMenuRef = ref(null)
-    const showAIToolsMenu = ref(false)
-    const aiToolsMenuRef = ref(null)
-
-    // 用户类型配置
-    const userTypeConfig = computed(() => {
-      return USER_TYPE_CONFIGS[authStore.userType] || USER_TYPE_CONFIGS.FREE
-    })
-
-    // 用户类型徽章样式
-    const userTypeBadgeClass = computed(() => {
-      const type = authStore.userType
-      switch (type) {
-        case 'FREE':
-          return 'bg-gray-100 text-gray-700'
-        case 'STARTER':
-          return 'bg-blue-100 text-blue-700'
-        case 'PRO':
-          return 'bg-purple-100 text-purple-700'
-        case 'BUSINESS':
-          return 'bg-yellow-100 text-yellow-700'
-        case 'ADMIN':
-          return 'bg-red-100 text-red-700'
-        default:
-          return 'bg-gray-100 text-gray-700'
-      }
-    })
-
-    // 切换用户菜单
-    const toggleUserMenu = () => {
-      showUserMenu.value = !showUserMenu.value
+    // 切换移动端菜单
+    const toggleMobileMenu = () => {
+      showMobileMenu.value = !showMobileMenu.value
     }
     
-    // 切换AI工具菜单
-    const toggleAIToolsMenu = () => {
-      showAIToolsMenu.value = !showAIToolsMenu.value
+    // 关闭移动端菜单
+    const closeMobileMenu = () => {
+      showMobileMenu.value = false
     }
-    
-    // 关闭AI工具菜单
-    const closeAIToolsMenu = () => {
-      showAIToolsMenu.value = false
-    }
-
-    // 处理登出
-    const handleSignOut = async () => {
-      showUserMenu.value = false
-      await authStore.signOut()
-      showLogoutSuccess()
-      router.push('/')
-    }
-
-    // 点击外部关闭菜单
-    const handleClickOutside = (event) => {
-      if (userMenuRef.value && !userMenuRef.value.contains(event.target)) {
-        showUserMenu.value = false
-      }
-      if (aiToolsMenuRef.value && !aiToolsMenuRef.value.contains(event.target)) {
-        showAIToolsMenu.value = false
-      }
-    }
-
-    onMounted(() => {
-      document.addEventListener('click', handleClickOutside)
-    })
-
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside)
-    })
 
     return {
-      authStore,
-      showUserMenu,
-      userMenuRef,
-      showAIToolsMenu,
-      aiToolsMenuRef,
-      userTypeConfig,
-      userTypeBadgeClass,
-      toggleUserMenu,
-      toggleAIToolsMenu,
-      closeAIToolsMenu,
-      handleSignOut
+      showMobileMenu,
+      toggleMobileMenu,
+      closeMobileMenu
     }
   }
 }

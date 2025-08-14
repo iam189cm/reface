@@ -28,6 +28,54 @@
   background: linear-gradient(135deg, #db2777, #9333ea);
 }
 
+/* 玻璃拟态效果和现代化样式 */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.bg-gradient-rainbow {
+  background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 50%, #fce7f3 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-icon {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+}
+
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pulse-soft {
+  animation: pulse-soft 2s infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* 响应式网格调整 */
+@media (max-width: 768px) {
+  .mobile-center {
+    text-align: center;
+  }
+}
+
 /* 动画效果 */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s ease;
