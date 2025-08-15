@@ -16,8 +16,8 @@
       <div class="space-y-3">
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-orange-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="repairMode"
+            type="radio"
             value="auto"
             class="text-orange-600 focus:ring-orange-500 mr-3"
           >
@@ -30,8 +30,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-orange-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="repairMode"
+            type="radio"
             value="manual"
             class="text-orange-600 focus:ring-orange-500 mr-3"
           >
@@ -45,7 +45,10 @@
     </div>
 
     <!-- 遮罩上传 (手动模式) -->
-    <div v-if="repairMode === 'manual'" class="mb-6">
+    <div
+      v-if="repairMode === 'manual'"
+      class="mb-6"
+    >
       <label class="block text-sm font-medium text-gray-700 mb-3">划痕遮罩</label>
       <div 
         class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-orange-400 transition-colors cursor-pointer"
@@ -57,25 +60,50 @@
           ref="maskInput"
           type="file"
           accept="image/*"
-          @change="handleMaskSelect"
           class="hidden"
+          @change="handleMaskSelect"
         >
         
         <div v-if="!maskFile">
-          <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          <svg
+            class="w-8 h-8 text-gray-400 mx-auto mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
           </svg>
-          <p class="text-sm text-gray-600">点击或拖拽上传划痕遮罩</p>
-          <p class="text-xs text-gray-400 mt-1">白色区域表示需要修复的位置</p>
+          <p class="text-sm text-gray-600">
+            点击或拖拽上传划痕遮罩
+          </p>
+          <p class="text-xs text-gray-400 mt-1">
+            白色区域表示需要修复的位置
+          </p>
         </div>
         
-        <div v-else class="flex items-center justify-center space-x-3">
+        <div
+          v-else
+          class="flex items-center justify-center space-x-3"
+        >
           <div class="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
-            <img :src="maskPreview" alt="Mask" class="w-full h-full object-cover">
+            <img
+              :src="maskPreview"
+              alt="Mask"
+              class="w-full h-full object-cover"
+            >
           </div>
           <div class="text-left">
-            <div class="text-sm font-medium text-gray-900">{{ maskFile.name }}</div>
-            <div class="text-xs text-gray-500">{{ formatFileSize(maskFile.size) }}</div>
+            <div class="text-sm font-medium text-gray-900">
+              {{ maskFile.name }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ formatFileSize(maskFile.size) }}
+            </div>
           </div>
           <Button
             type="secondary"
@@ -95,8 +123,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="repairStrength"
+          type="range"
           min="1"
           max="10"
           step="1"
@@ -119,15 +147,23 @@
         block
         @click="handleScratchFix"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">🔧</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日划痕修复次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日划痕修复次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -141,8 +177,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-orange-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-orange-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -154,13 +200,20 @@
       </ul>
       
       <div class="mt-3 p-2 bg-white/60 rounded border border-orange-200">
-        <p class="text-xs text-orange-700 font-medium mb-1">💡 使用技巧：</p>
-        <p class="text-xs text-gray-600">对于严重损坏的照片，建议先使用"智能修复"，效果不满意再尝试"手动标记"模式。</p>
+        <p class="text-xs text-orange-700 font-medium mb-1">
+          💡 使用技巧：
+        </p>
+        <p class="text-xs text-gray-600">
+          对于严重损坏的照片，建议先使用"智能修复"，效果不满意再尝试"手动标记"模式。
+        </p>
       </div>
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

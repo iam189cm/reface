@@ -1,10 +1,15 @@
 <template>
   <div :class="containerClasses">
     <!-- 加载图标 -->
-    <div :class="spinnerClasses"></div>
+    <div :class="spinnerClasses" />
     
     <!-- 加载文本 -->
-    <p v-if="message" :class="textClasses">{{ message }}</p>
+    <p
+      v-if="message"
+      :class="textClasses"
+    >
+      {{ message }}
+    </p>
   </div>
 </template>
 

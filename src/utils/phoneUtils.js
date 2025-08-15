@@ -15,7 +15,7 @@ export function formatPhoneNumber(phone) {
   if (!phone) return ''
   
   // 移除所有空格、横线、括号等特殊字符
-  let cleanPhone = phone.replace(/[\s\-\(\)]/g, '')
+  const cleanPhone = phone.replace(/[\s\-\(\)]/g, '')
   
   // 如果已经有+号，直接返回
   if (cleanPhone.startsWith('+')) {

@@ -3,8 +3,18 @@
     <!-- 主要功能介绍 -->
     <div class="text-center mb-16">
       <div class="inline-flex items-center bg-gradient-to-r from-pink-100 to-purple-100 rounded-full px-4 py-2 mb-6">
-        <svg class="w-4 h-4 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-pink-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          />
         </svg>
         <span class="text-sm font-medium text-gray-700">AI图片处理功能全览</span>
       </div>
@@ -29,7 +39,9 @@
             </div>
             背景处理
           </h3>
-          <p class="text-gray-600">智能背景识别和处理技术</p>
+          <p class="text-gray-600">
+            智能背景识别和处理技术
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
@@ -50,7 +62,9 @@
             </div>
             图像增强
           </h3>
-          <p class="text-gray-600">提升图片质量和清晰度</p>
+          <p class="text-gray-600">
+            提升图片质量和清晰度
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
@@ -71,7 +85,9 @@
             </div>
             创意效果
           </h3>
-          <p class="text-gray-600">艺术化和创意图片处理</p>
+          <p class="text-gray-600">
+            艺术化和创意图片处理
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
@@ -92,7 +108,9 @@
             </div>
             实用工具
           </h3>
-          <p class="text-gray-600">日常图片处理必备工具</p>
+          <p class="text-gray-600">
+            日常图片处理必备工具
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard
@@ -107,8 +125,12 @@
 
     <!-- CTA区域 -->
     <div class="text-center mt-16 p-8 glass-effect rounded-3xl">
-      <h3 class="text-2xl font-bold text-gray-900 mb-4">准备开始了吗？</h3>
-      <p class="text-gray-600 mb-6">选择任意功能，立即体验AI图片处理的强大威力</p>
+      <h3 class="text-2xl font-bold text-gray-900 mb-4">
+        准备开始了吗？
+      </h3>
+      <p class="text-gray-600 mb-6">
+        选择任意功能，立即体验AI图片处理的强大威力
+      </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <Button
           type="primary"
@@ -116,8 +138,18 @@
           @click="scrollToUpload"
         >
           <template #icon>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
           </template>
           上传图片开始

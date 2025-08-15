@@ -17,8 +17,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="compressionQuality"
+          type="range"
           min="10"
           max="95"
           step="5"
@@ -46,8 +46,8 @@
           type="secondary"
           size="small"
           block
-          @click="setMode('size')"
           :class="{ 'bg-teal-100 border-teal-300': compressionMode === 'size' }"
+          @click="setMode('size')"
         >
           文件大小优先
         </Button>
@@ -55,8 +55,8 @@
           type="secondary"
           size="small"
           block
-          @click="setMode('quality')"
           :class="{ 'bg-teal-100 border-teal-300': compressionMode === 'quality' }"
+          @click="setMode('quality')"
         >
           质量优先
         </Button>
@@ -64,8 +64,8 @@
           type="secondary"
           size="small"
           block
-          @click="setMode('web')"
           :class="{ 'bg-teal-100 border-teal-300': compressionMode === 'web' }"
+          @click="setMode('web')"
         >
           Web优化
         </Button>
@@ -81,7 +81,10 @@
         block
         @click="handleCompress"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">🗜️</span>
         </template>
         {{ buttonText }}
@@ -96,7 +99,9 @@
 
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-teal-50 rounded-lg">
-      <h4 class="text-sm font-medium text-gray-900 mb-2">功能介绍</h4>
+      <h4 class="text-sm font-medium text-gray-900 mb-2">
+        功能介绍
+      </h4>
       <ul class="text-xs text-gray-600 space-y-1">
         <li>• AI智能压缩，减小文件大小</li>
         <li>• 保持图片质量的同时压缩体积</li>
@@ -105,7 +110,10 @@
       </ul>
     </div>
 
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

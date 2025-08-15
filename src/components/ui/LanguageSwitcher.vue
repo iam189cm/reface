@@ -1,9 +1,9 @@
 <template>
   <div class="language-switcher">
     <button 
-      @click="handleSwitchLanguage"
       :class="buttonClass"
       :title="switchTooltip"
+      @click="handleSwitchLanguage"
     >
       {{ switchButtonText }}
     </button>

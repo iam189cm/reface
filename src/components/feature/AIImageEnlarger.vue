@@ -2,8 +2,12 @@
   <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-pink-100">
     <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
       <div class="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+        <svg
+          class="w-3 h-3 text-white"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
         </svg>
       </div>
       🔍 AI图像高清放大
@@ -32,25 +36,34 @@
         >
           <div class="flex items-center">
             <input
+              v-model="selectedScale"
               type="radio"
               :value="key"
-              v-model="selectedScale"
               :disabled="!canUseScale(key)"
               class="text-pink-600 focus:ring-pink-500 mr-3"
             >
             <div>
               <div class="font-medium text-gray-900">
                 {{ option.name }}
-                <span v-if="!canUseScale(key)" class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full ml-2">
+                <span
+                  v-if="!canUseScale(key)"
+                  class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full ml-2"
+                >
                   🔒 需要升级
                 </span>
               </div>
-              <div class="text-sm text-gray-600">{{ option.description }}</div>
+              <div class="text-sm text-gray-600">
+                {{ option.description }}
+              </div>
             </div>
           </div>
           <div class="text-right">
-            <div class="text-sm font-medium text-gray-900">{{ option.credit }} Credit</div>
-            <div class="text-xs text-gray-500">约 {{ getEstimatedTime(key) }}</div>
+            <div class="text-sm font-medium text-gray-900">
+              {{ option.credit }} Credit
+            </div>
+            <div class="text-xs text-gray-500">
+              约 {{ getEstimatedTime(key) }}
+            </div>
           </div>
         </div>
       </div>
@@ -63,8 +76,8 @@
           高级参数设置
         </label>
         <button
-          @click="showAdvanced = !showAdvanced"
           class="text-sm text-pink-600 hover:text-pink-700 flex items-center"
+          @click="showAdvanced = !showAdvanced"
         >
           {{ showAdvanced ? '收起' : '展开' }}
           <svg 
@@ -73,12 +86,15 @@
             fill="currentColor" 
             viewBox="0 0 20 20"
           >
-            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
           </svg>
         </button>
       </div>
       
-      <div v-show="showAdvanced" class="space-y-4 pt-2">
+      <div
+        v-show="showAdvanced"
+        class="space-y-4 pt-2"
+      >
         <!-- 降噪强度 -->
         <div>
           <label class="block text-sm text-gray-600 mb-2">
@@ -117,8 +133,8 @@
 
         <!-- 重置按钮 -->
         <button
-          @click="resetAdvancedParams"
           class="text-sm text-gray-600 hover:text-gray-800"
+          @click="resetAdvancedParams"
         >
           🔄 重置为推荐值
         </button>
@@ -134,16 +150,26 @@
         block
         @click="handleEnlargeImage"
       >
-        <template #icon v-if="!isProcessing">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
+          <svg
+            class="w-4 h-4"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
           </svg>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial || needsUpgrade" class="text-center">
+      <div
+        v-if="!canUseTrial || needsUpgrade"
+        class="text-center"
+      >
         <p class="text-sm text-gray-600 mb-2">
           {{ needsUpgrade ? '该功能需要升级解锁' : '试用次数已用完' }}
         </p>
@@ -157,7 +183,10 @@
       </div>
 
       <!-- 处理进度显示 -->
-      <div v-if="isProcessing" class="bg-gray-50 rounded-lg p-4">
+      <div
+        v-if="isProcessing"
+        class="bg-gray-50 rounded-lg p-4"
+      >
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium text-gray-700">{{ processingMessage }}</span>
           <span class="text-sm text-gray-600">{{ processingProgress }}%</span>
@@ -166,7 +195,7 @@
           <div 
             class="bg-gradient-to-r from-pink-500 to-purple-600 h-2 rounded-full transition-all duration-300"
             :style="{ width: processingProgress + '%' }"
-          ></div>
+          />
         </div>
         <div class="text-xs text-gray-500 mt-2 text-center">
           预计剩余时间: {{ getEstimatedRemainingTime() }}
@@ -174,7 +203,10 @@
       </div>
 
       <!-- API Token 配置（开发模式） -->
-      <div v-if="isDevelopment" class="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+      <div
+        v-if="isDevelopment"
+        class="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200"
+      >
         <label class="block text-sm font-medium text-gray-700 mb-2">
           VanceAI API Token (开发模式)
         </label>
@@ -191,7 +223,10 @@
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

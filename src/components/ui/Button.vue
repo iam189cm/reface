@@ -5,13 +5,19 @@
     @click="handleClick"
   >
     <!-- 加载状态 -->
-    <div v-if="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+    <div
+      v-if="loading"
+      class="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"
+    />
     
     <!-- 图标 -->
-    <slot name="icon" v-if="!loading"></slot>
+    <slot
+      v-if="!loading"
+      name="icon"
+    />
     
     <!-- 文本内容 -->
-    <slot></slot>
+    <slot />
   </button>
 </template>
 

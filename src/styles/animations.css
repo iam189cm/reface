@@ -1,0 +1,324 @@
+/* 
+ * 动画微交互样式库
+ * 提供一致的动画效果和过渡
+ */
+
+/* ===========================================
+   页面过渡动画
+   ========================================== */
+
+/* 路由页面过渡 */
+.page-transition-enter-active,
+.page-transition-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition-enter-from {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.page-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* ===========================================
+   按钮和交互元素动画
+   ========================================== */
+
+/* 按钮悬停效果增强 */
+.btn-enhanced {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-enhanced:active {
+  transform: translateY(0);
+  transition: all 0.1s;
+}
+
+/* 按钮涟漪效果 */
+.btn-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-enhanced:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* ===========================================
+   卡片和容器动画
+   ========================================== */
+
+/* 卡片悬停效果 */
+.card-interactive {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.card-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片内容动画 */
+.card-content {
+  transition: all 0.3s ease-out;
+}
+
+.card-interactive:hover .card-content {
+  transform: scale(1.02);
+}
+
+/* ===========================================
+   加载和状态动画
+   ========================================== */
+
+/* 脉冲加载动画 */
+.pulse-loading {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* 骨架屏动画 */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ===========================================
+   图标和小元素动画
+   ========================================== */
+
+/* 图标悬停动画 */
+.icon-hover {
+  transition: all 0.2s ease-out;
+}
+
+.icon-hover:hover {
+  transform: scale(1.15) rotate(5deg);
+  color: #ec4899; /* pink-500 */
+}
+
+/* 旋转动画 */
+.rotate-on-hover {
+  transition: transform 0.3s ease-out;
+}
+
+.rotate-on-hover:hover {
+  transform: rotate(360deg);
+}
+
+/* ===========================================
+   列表和网格动画
+   ========================================== */
+
+/* 列表项动画 */
+.list-item {
+  transition: all 0.2s ease-out;
+}
+
+.list-item:hover {
+  background-color: rgba(236, 72, 153, 0.05);
+  padding-left: 1rem;
+}
+
+/* 网格项动画 */
+.grid-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.grid-item:hover {
+  transform: translateY(-2px);
+  z-index: 10;
+}
+
+/* ===========================================
+   表单和输入动画
+   ========================================== */
+
+/* 输入框聚焦动画 */
+.input-enhanced {
+  transition: all 0.3s ease-out;
+  position: relative;
+}
+
+.input-enhanced:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+/* 标签浮动动画 */
+.floating-label {
+  transition: all 0.3s ease-out;
+}
+
+.input-enhanced:focus + .floating-label,
+.input-enhanced:not(:placeholder-shown) + .floating-label {
+  transform: translateY(-1.5rem) scale(0.85);
+  color: #ec4899;
+}
+
+/* ===========================================
+   模态框和覆盖层动画
+   ========================================== */
+
+/* 模态框背景动画 */
+.modal-backdrop-enter-active,
+.modal-backdrop-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.modal-backdrop-enter-from,
+.modal-backdrop-leave-to {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+}
+
+/* 模态框内容动画 */
+.modal-content-enter-active {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-content-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.modal-content-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+.modal-content-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(1.05);
+}
+
+/* ===========================================
+   通知和提示动画
+   ========================================== */
+
+/* 通知滑入动画 */
+.notification-enter-active {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.notification-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.notification-enter-from {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.notification-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* 通知摇摆提醒 */
+.notification-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ===========================================
+   特殊效果动画
+   ========================================== */
+
+/* 渐变背景动画 */
+.gradient-animated {
+  background: linear-gradient(-45deg, #ec4899, #8b5cf6, #06b6d4, #10b981);
+  background-size: 400% 400%;
+  animation: gradient-flow 8s ease infinite;
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 闪烁强调动画 */
+.highlight-flash {
+  animation: highlight-flash 0.6s ease-out;
+}
+
+@keyframes highlight-flash {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(236, 72, 153, 0.2); }
+  100% { background-color: transparent; }
+}
+
+/* ===========================================
+   响应式动画控制
+   ========================================== */
+
+/* 减少动画（用户偏好） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .card-interactive:hover,
+  .btn-enhanced:hover {
+    transform: none;
+  }
+  
+  /* 移动端减少阴影效果 */
+  .btn-enhanced:hover,
+  .card-interactive:hover {
+    box-shadow: none;
+  }
+}

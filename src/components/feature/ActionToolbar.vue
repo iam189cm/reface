@@ -5,12 +5,22 @@
       size="small"
       type="ghost"
       :disabled="!canUndo"
-      @click="$emit('undo')"
       title="撤销 (Ctrl+Z)"
+      @click="$emit('undo')"
     >
       <template #icon>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+          />
         </svg>
       </template>
     </Button>
@@ -20,12 +30,22 @@
       size="small"
       type="ghost"
       :disabled="!canRedo"
-      @click="$emit('redo')"
       title="重做 (Ctrl+Y)"
+      @click="$emit('redo')"
     >
       <template #icon>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6" />
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 10H11a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6"
+          />
         </svg>
       </template>
     </Button>
@@ -34,8 +54,8 @@
     <Button
       size="small"
       type="secondary"
-      @click="$emit('reset')"
       title="重置所有调整"
+      @click="$emit('reset')"
     >
       重置
     </Button>
@@ -44,8 +64,8 @@
     <Button
       size="small"
       type="primary"
-      @click="$emit('download')"
       title="下载图片 (Ctrl+S)"
+      @click="$emit('download')"
     >
       下载图片
     </Button>

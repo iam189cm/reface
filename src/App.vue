@@ -1,22 +1,34 @@
 <template>
-  <div id="app" class="min-h-screen bg-gradient-rainbow">
+  <div
+    id="app"
+    class="min-h-screen bg-gradient-rainbow flex flex-col"
+  >
     <!-- 导航栏 -->
     <AppHeader />
 
     <!-- 主要内容区域 -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="flex-1">
       <router-view />
     </main>
 
+    <!-- 页脚 -->
+    <AppFooter />
+
     <!-- 全局加载覆盖层 -->
-    <Loading v-if="isGlobalLoading" :message="globalLoadingMessage" overlay />
+    <GlobalLoading />
     
     <!-- 开发环境信息 -->
-    <div v-if="isDevelopment && showDevInfo" class="fixed bottom-4 right-4 z-50">
+    <div
+      v-if="isDevelopment && showDevInfo"
+      class="fixed bottom-4 right-4 z-50"
+    >
       <div class="bg-black bg-opacity-75 text-white text-xs p-2 rounded-lg max-w-xs">
         <div class="flex justify-between items-center mb-1">
           <span class="font-semibold">🔧 开发模式</span>
-          <button @click="showDevInfo = false" class="text-gray-400 hover:text-white">
+          <button
+            class="text-gray-400 hover:text-white"
+            @click="showDevInfo = false"
+          >
             ✕
           </button>
         </div>
@@ -33,7 +45,8 @@
 <script>
 import { computed, onMounted, provide, ref } from 'vue'
 import AppHeader from './components/layout/AppHeader.vue'
-import Loading from './components/ui/Loading.vue'
+import AppFooter from './components/layout/AppFooter.vue'
+import GlobalLoading from './components/ui/GlobalLoading.vue'
 import { useAppStore } from './stores/appStore.js'
 import { useTrialStore } from './stores/trialStore.js'
 import { useAuthStore } from './stores/modules/auth/authStore.js'
@@ -43,7 +56,8 @@ export default {
   name: 'App',
   components: {
     AppHeader,
-    Loading
+    AppFooter,
+    GlobalLoading
   },
   setup() {
     const appStore = useAppStore()

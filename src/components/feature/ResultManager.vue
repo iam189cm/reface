@@ -4,13 +4,27 @@
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center">
         <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-3">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          <svg
+            class="w-5 h-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
         </div>
         <div>
-          <h3 class="text-lg font-semibold text-gray-900">处理结果</h3>
-          <p class="text-sm text-gray-600">管理和下载AI处理结果</p>
+          <h3 class="text-lg font-semibold text-gray-900">
+            处理结果
+          </h3>
+          <p class="text-sm text-gray-600">
+            管理和下载AI处理结果
+          </p>
         </div>
       </div>
       <div class="flex items-center space-x-3">
@@ -25,8 +39,8 @@
         <Button 
           type="secondary" 
           size="small" 
-          @click="refreshResults"
           :loading="isRefreshing"
+          @click="refreshResults"
         >
           刷新
         </Button>
@@ -34,21 +48,44 @@
     </div>
 
     <!-- 空状态 -->
-    <div v-if="results.length === 0" class="text-center py-12">
+    <div
+      v-if="results.length === 0"
+      class="text-center py-12"
+    >
       <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        <svg
+          class="w-10 h-10 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
         </svg>
       </div>
-      <h4 class="text-lg font-medium text-gray-900 mb-2">暂无处理结果</h4>
-      <p class="text-gray-600 mb-6">使用AI功能处理图片后，结果将在这里显示</p>
-      <Button type="primary" @click="$emit('start-processing')">
+      <h4 class="text-lg font-medium text-gray-900 mb-2">
+        暂无处理结果
+      </h4>
+      <p class="text-gray-600 mb-6">
+        使用AI功能处理图片后，结果将在这里显示
+      </p>
+      <Button
+        type="primary"
+        @click="$emit('start-processing')"
+      >
         开始处理图片
       </Button>
     </div>
 
     <!-- 结果列表 -->
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <!-- 筛选和排序 -->
       <div class="glass-effect rounded-xl p-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -58,8 +95,14 @@
               v-model="filterService"
               class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
             >
-              <option value="">所有功能</option>
-              <option v-for="service in uniqueServices" :key="service" :value="service">
+              <option value="">
+                所有功能
+              </option>
+              <option
+                v-for="service in uniqueServices"
+                :key="service"
+                :value="service"
+              >
                 {{ getServiceName(service) }}
               </option>
             </select>
@@ -68,9 +111,15 @@
               v-model="filterStatus"
               class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
             >
-              <option value="">所有状态</option>
-              <option value="completed">已完成</option>
-              <option value="failed">失败</option>
+              <option value="">
+                所有状态
+              </option>
+              <option value="completed">
+                已完成
+              </option>
+              <option value="failed">
+                失败
+              </option>
             </select>
           </div>
           
@@ -81,9 +130,15 @@
               v-model="sortBy"
               class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
             >
-              <option value="created_at">创建时间</option>
-              <option value="service_type">功能类型</option>
-              <option value="processing_time">处理时间</option>
+              <option value="created_at">
+                创建时间
+              </option>
+              <option value="service_type">
+                功能类型
+              </option>
+              <option value="processing_time">
+                处理时间
+              </option>
             </select>
             <Button
               type="secondary"
@@ -99,20 +154,36 @@
         <div class="mt-4 pt-4 border-t border-gray-200">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
             <div>
-              <div class="text-xl font-bold text-gray-900">{{ filteredResults.length }}</div>
-              <div class="text-sm text-gray-500">结果总数</div>
+              <div class="text-xl font-bold text-gray-900">
+                {{ filteredResults.length }}
+              </div>
+              <div class="text-sm text-gray-500">
+                结果总数
+              </div>
             </div>
             <div>
-              <div class="text-xl font-bold text-green-600">{{ completedResults.length }}</div>
-              <div class="text-sm text-gray-500">成功处理</div>
+              <div class="text-xl font-bold text-green-600">
+                {{ completedResults.length }}
+              </div>
+              <div class="text-sm text-gray-500">
+                成功处理
+              </div>
             </div>
             <div>
-              <div class="text-xl font-bold text-red-600">{{ failedResults.length }}</div>
-              <div class="text-sm text-gray-500">处理失败</div>
+              <div class="text-xl font-bold text-red-600">
+                {{ failedResults.length }}
+              </div>
+              <div class="text-sm text-gray-500">
+                处理失败
+              </div>
             </div>
             <div>
-              <div class="text-xl font-bold text-blue-600">{{ totalCreditsUsed }}</div>
-              <div class="text-sm text-gray-500">消耗积分</div>
+              <div class="text-xl font-bold text-blue-600">
+                {{ totalCreditsUsed }}
+              </div>
+              <div class="text-sm text-gray-500">
+                消耗积分
+              </div>
             </div>
           </div>
         </div>
@@ -132,7 +203,10 @@
       </div>
 
       <!-- 分页 -->
-      <div v-if="totalPages > 1" class="flex justify-center">
+      <div
+        v-if="totalPages > 1"
+        class="flex justify-center"
+      >
         <div class="flex items-center space-x-2">
           <Button
             type="secondary"

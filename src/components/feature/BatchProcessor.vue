@@ -5,52 +5,90 @@
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center">
           <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
             </svg>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">批量处理</h3>
-            <p class="text-sm text-gray-600">同时处理多张图片，提升工作效率</p>
+            <h3 class="text-lg font-semibold text-gray-900">
+              批量处理
+            </h3>
+            <p class="text-sm text-gray-600">
+              同时处理多张图片，提升工作效率
+            </p>
           </div>
         </div>
-        <div v-if="files.length > 0" class="text-right">
-          <div class="text-2xl font-bold text-gray-900">{{ files.length }}</div>
-          <div class="text-sm text-gray-500">张图片</div>
+        <div
+          v-if="files.length > 0"
+          class="text-right"
+        >
+          <div class="text-2xl font-bold text-gray-900">
+            {{ files.length }}
+          </div>
+          <div class="text-sm text-gray-500">
+            张图片
+          </div>
         </div>
       </div>
       
       <!-- 批量上传区域 -->
       <div 
-        @drop="handleDrop"
-        @dragover="handleDragOver"
-        @dragenter="handleDragEnter"
-        @dragleave="handleDragLeave"
         :class="[
           'border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200',
           isDragging 
             ? 'border-pink-400 bg-pink-50' 
             : 'border-gray-300 hover:border-pink-300'
         ]"
+        @drop="handleDrop"
+        @dragover="handleDragOver"
+        @dragenter="handleDragEnter"
+        @dragleave="handleDragLeave"
       >
         <input
           ref="fileInput"
           type="file"
           multiple
           accept="image/*"
-          @change="handleFileSelect"
           class="hidden"
+          @change="handleFileSelect"
         >
         
         <div v-if="files.length === 0">
           <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            <svg
+              class="w-8 h-8 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
             </svg>
           </div>
-          <h4 class="text-lg font-medium text-gray-900 mb-2">添加图片进行批量处理</h4>
-          <p class="text-gray-600 mb-4">拖拽图片到这里，或点击选择文件</p>
-          <Button type="primary" @click="$refs.fileInput.click()">
+          <h4 class="text-lg font-medium text-gray-900 mb-2">
+            添加图片进行批量处理
+          </h4>
+          <p class="text-gray-600 mb-4">
+            拖拽图片到这里，或点击选择文件
+          </p>
+          <Button
+            type="primary"
+            @click="$refs.fileInput.click()"
+          >
             选择图片
           </Button>
           <p class="text-xs text-gray-500 mt-2">
@@ -59,8 +97,14 @@
         </div>
         
         <div v-else>
-          <p class="text-gray-600 mb-2">拖拽更多图片到这里，或</p>
-          <Button type="secondary" size="small" @click="$refs.fileInput.click()">
+          <p class="text-gray-600 mb-2">
+            拖拽更多图片到这里，或
+          </p>
+          <Button
+            type="secondary"
+            size="small"
+            @click="$refs.fileInput.click()"
+          >
             继续添加
           </Button>
         </div>
@@ -68,18 +112,27 @@
     </div>
 
     <!-- 文件列表 -->
-    <div v-if="files.length > 0" class="glass-effect rounded-2xl p-6 mb-6">
+    <div
+      v-if="files.length > 0"
+      class="glass-effect rounded-2xl p-6 mb-6"
+    >
       <div class="flex items-center justify-between mb-4">
-        <h4 class="text-lg font-semibold text-gray-900">文件列表</h4>
+        <h4 class="text-lg font-semibold text-gray-900">
+          文件列表
+        </h4>
         <div class="flex items-center space-x-2">
-          <Button type="secondary" size="small" @click="clearAll">
+          <Button
+            type="secondary"
+            size="small"
+            @click="clearAll"
+          >
             清空列表
           </Button>
           <Button 
             type="secondary" 
             size="small" 
-            @click="removeSelected"
             :disabled="selectedFiles.length === 0"
+            @click="removeSelected"
           >
             删除选中 ({{ selectedFiles.length }})
           </Button>
@@ -93,7 +146,7 @@
           :key="`${file.name}-${index}`"
           :file="file"
           :index="index"
-          :isSelected="selectedFiles.includes(index)"
+          :is-selected="selectedFiles.includes(index)"
           :status="getFileStatus(index)"
           :result="results[index]"
           @select="toggleFileSelection"
@@ -109,8 +162,8 @@
             type="checkbox"
             :checked="selectedFiles.length === files.length && files.length > 0"
             :indeterminate="selectedFiles.length > 0 && selectedFiles.length < files.length"
-            @change="toggleSelectAll"
             class="rounded border-gray-300 text-pink-600 shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50"
+            @change="toggleSelectAll"
           >
           <span class="ml-2 text-sm text-gray-700">全选</span>
         </label>
@@ -121,8 +174,13 @@
     </div>
 
     <!-- 处理设置 -->
-    <div v-if="files.length > 0" class="glass-effect rounded-2xl p-6 mb-6">
-      <h4 class="text-lg font-semibold text-gray-900 mb-4">处理设置</h4>
+    <div
+      v-if="files.length > 0"
+      class="glass-effect rounded-2xl p-6 mb-6"
+    >
+      <h4 class="text-lg font-semibold text-gray-900 mb-4">
+        处理设置
+      </h4>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- 服务选择 -->
@@ -132,7 +190,9 @@
             v-model="selectedService"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
           >
-            <option value="">请选择处理功能</option>
+            <option value="">
+              请选择处理功能
+            </option>
             <optgroup 
               v-for="(category, key) in servicesByCategory" 
               :key="key"
@@ -155,8 +215,8 @@
             并发处理数 ({{ concurrentLimit }})
           </label>
           <input
-            type="range"
             v-model="concurrentLimit"
+            type="range"
             min="1"
             max="5"
             step="1"
@@ -171,10 +231,15 @@
     </div>
 
     <!-- 处理控制 -->
-    <div v-if="files.length > 0" class="glass-effect rounded-2xl p-6">
+    <div
+      v-if="files.length > 0"
+      class="glass-effect rounded-2xl p-6"
+    >
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h4 class="text-lg font-semibold text-gray-900">开始处理</h4>
+          <h4 class="text-lg font-semibold text-gray-900">
+            开始处理
+          </h4>
           <p class="text-sm text-gray-600">
             将使用 {{ selectedService ? getServiceInfo(selectedService)?.name : '未选择' }} 处理 {{ files.length }} 张图片
           </p>
@@ -199,7 +264,10 @@
       </div>
       
       <!-- 处理进度 -->
-      <div v-if="isProcessing || completedCount > 0" class="space-y-4">
+      <div
+        v-if="isProcessing || completedCount > 0"
+        class="space-y-4"
+      >
         <!-- 总进度条 -->
         <div>
           <div class="flex justify-between text-sm text-gray-600 mb-2">
@@ -210,23 +278,35 @@
             <div 
               class="bg-gradient-to-r from-pink-500 to-purple-600 h-3 rounded-full transition-all duration-300"
               :style="{ width: `${overallProgress}%` }"
-            ></div>
+            />
           </div>
         </div>
         
         <!-- 统计信息 -->
         <div class="grid grid-cols-3 gap-4 text-center">
           <div>
-            <div class="text-2xl font-bold text-green-600">{{ successCount }}</div>
-            <div class="text-sm text-gray-500">成功</div>
+            <div class="text-2xl font-bold text-green-600">
+              {{ successCount }}
+            </div>
+            <div class="text-sm text-gray-500">
+              成功
+            </div>
           </div>
           <div>
-            <div class="text-2xl font-bold text-red-600">{{ failedCount }}</div>
-            <div class="text-sm text-gray-500">失败</div>
+            <div class="text-2xl font-bold text-red-600">
+              {{ failedCount }}
+            </div>
+            <div class="text-sm text-gray-500">
+              失败
+            </div>
           </div>
           <div>
-            <div class="text-2xl font-bold text-blue-600">{{ processingCount }}</div>
-            <div class="text-sm text-gray-500">处理中</div>
+            <div class="text-2xl font-bold text-blue-600">
+              {{ processingCount }}
+            </div>
+            <div class="text-sm text-gray-500">
+              处理中
+            </div>
           </div>
         </div>
       </div>

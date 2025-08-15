@@ -7,7 +7,10 @@
       </label>
       <div class="flex items-center space-x-2">
         <span :class="valueClasses">{{ displayValue }}</span>
-        <span v-if="unit" class="text-xs text-gray-500">{{ unit }}</span>
+        <span
+          v-if="unit"
+          class="text-xs text-gray-500"
+        >{{ unit }}</span>
       </div>
     </div>
     
@@ -19,7 +22,7 @@
         <div 
           :class="progressClasses"
           :style="progressStyle"
-        ></div>
+        />
         
         <!-- 滑块手柄 -->
         <div
@@ -27,7 +30,7 @@
           :style="thumbStyle"
           @mousedown="startDrag"
           @touchstart="startDrag"
-        ></div>
+        />
       </div>
       
       <!-- 隐藏的原生滑块（用于键盘导航和无障碍） -->
@@ -38,14 +41,17 @@
         :max="max"
         :step="step"
         :value="modelValue"
+        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         @input="handleInput"
         @change="handleChange"
-        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-      />
+      >
     </div>
     
     <!-- 刻度标记（可选） -->
-    <div v-if="showTicks" class="flex justify-between text-xs text-gray-400 px-1">
+    <div
+      v-if="showTicks"
+      class="flex justify-between text-xs text-gray-400 px-1"
+    >
       <span>{{ min }}</span>
       <span v-if="showMiddleTick">{{ Math.round((min + max) / 2) }}</span>
       <span>{{ max }}</span>

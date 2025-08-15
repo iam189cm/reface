@@ -1,25 +1,49 @@
 <template>
   <div class="ai-parameter-panel">
-    <div v-if="!serviceType" class="text-center py-8">
+    <div
+      v-if="!serviceType"
+      class="text-center py-8"
+    >
       <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+        <svg
+          class="w-8 h-8 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
+          />
         </svg>
       </div>
-      <p class="text-gray-500">请先选择AI功能以调节参数</p>
+      <p class="text-gray-500">
+        请先选择AI功能以调节参数
+      </p>
     </div>
     
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <!-- 参数面板头部 -->
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3"
-               :class="getCategoryGradient(serviceInfo?.category)">
+          <div
+            class="w-8 h-8 rounded-lg flex items-center justify-center mr-3"
+            :class="getCategoryGradient(serviceInfo?.category)"
+          >
             <span class="text-sm">{{ serviceInfo?.icon }}</span>
           </div>
           <div>
-            <h3 class="font-semibold text-gray-900">{{ serviceInfo?.name }}</h3>
-            <p class="text-sm text-gray-500">参数调节</p>
+            <h3 class="font-semibold text-gray-900">
+              {{ serviceInfo?.name }}
+            </h3>
+            <p class="text-sm text-gray-500">
+              参数调节
+            </p>
           </div>
         </div>
         <Button 
@@ -37,8 +61,18 @@
         <!-- 通用参数 -->
         <div v-if="commonParams.length > 0">
           <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4"></path>
+            <svg
+              class="w-4 h-4 mr-2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4"
+              />
             </svg>
             基础设置
           </h4>
@@ -57,9 +91,24 @@
         <div v-if="advancedParams.length > 0">
           <div class="flex items-center justify-between mb-3">
             <h4 class="text-sm font-medium text-gray-700 flex items-center">
-              <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <svg
+                class="w-4 h-4 mr-2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
               高级设置
             </h4>
@@ -71,7 +120,10 @@
               {{ showAdvanced ? '隐藏' : '显示' }}
             </Button>
           </div>
-          <div v-show="showAdvanced" class="space-y-3">
+          <div
+            v-show="showAdvanced"
+            class="space-y-3"
+          >
             <ParameterControl
               v-for="param in advancedParams"
               :key="param.name"
@@ -83,10 +135,23 @@
         </div>
         
         <!-- 预设模版 -->
-        <div v-if="presets.length > 0" class="border-t border-gray-200 pt-4">
+        <div
+          v-if="presets.length > 0"
+          class="border-t border-gray-200 pt-4"
+        >
           <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+            <svg
+              class="w-4 h-4 mr-2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+              />
             </svg>
             快速预设
           </h4>
@@ -107,11 +172,17 @@
       <!-- 参数预览 -->
       <div class="bg-gray-50 rounded-lg p-4">
         <div class="flex items-center justify-between mb-2">
-          <h4 class="text-sm font-medium text-gray-700">参数预览</h4>
+          <h4 class="text-sm font-medium text-gray-700">
+            参数预览
+          </h4>
           <span class="text-xs text-gray-500">预计处理时间: {{ estimatedTime }}秒</span>
         </div>
         <div class="text-xs text-gray-600 space-y-1">
-          <div v-for="(value, key) in parameters" :key="key" class="flex justify-between">
+          <div
+            v-for="(value, key) in parameters"
+            :key="key"
+            class="flex justify-between"
+          >
             <span>{{ getParameterLabel(key) }}:</span>
             <span class="font-mono">{{ formatParameterValue(key, value) }}</span>
           </div>

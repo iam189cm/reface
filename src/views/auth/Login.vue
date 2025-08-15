@@ -2,63 +2,101 @@
   <div class="min-h-screen flex items-center justify-center bg-gradient-rainbow px-4">
     <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">登录 Reface</h1>
-        <p class="text-gray-600">选择你喜欢的登录方式</p>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          登录 Reface
+        </h1>
+        <p class="text-gray-600">
+          选择你喜欢的登录方式
+        </p>
       </div>
 
       <!-- 第三方登录按钮 -->
       <div class="space-y-4 mb-6">
         <button
-          @click="signInWithProvider('google')"
           :disabled="loading"
           class="w-full flex items-center justify-center px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50"
+          @click="signInWithProvider('google')"
         >
-          <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <svg
+            class="w-5 h-5 mr-3"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="currentColor"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
           </svg>
           Google 登录
         </button>
 
         <button
-          @click="togglePhoneLogin"
           :disabled="loading"
           class="w-full flex items-center justify-center px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors disabled:opacity-50"
+          @click="togglePhoneLogin"
         >
-          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+          <svg
+            class="w-5 h-5 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+            />
           </svg>
           手机号登录
         </button>
 
         <!-- 微信登录 - 准备中 -->
         <button
-          @click="signInWithWechat"
           :disabled="true"
           class="w-full flex items-center justify-center px-4 py-3 bg-green-400 text-white rounded-lg opacity-50 cursor-not-allowed"
+          @click="signInWithWechat"
         >
-          <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.162 4.203 2.969 5.522l-.666 2.012 2.343-1.211c.849.173 1.714.262 2.045.262 5.099 0 8.691-3.513 8.691-7.849 0-4.336-3.592-7.849-8.691-7.849M8.8 14.109c-.474 0-.995-.262-1.723-.262-.891 0-1.783.262-2.674.262-3.067 0-5.741-1.97-5.741-4.729 0-2.759 2.674-4.729 5.741-4.729.891 0 1.783.262 2.674.262.728 0 1.249-.262 1.723-.262 3.067 0 5.741 1.97 5.741 4.729s-2.674 4.729-5.741 4.729M24 14.805c0 3.513-3.022 6.365-6.764 6.365-.849 0-1.697-.087-2.546-.262L12 22.119l-.69-1.211C9.617 20.82 8.191 19.88 7.342 18.648c3.67-.349 6.764-2.677 7.613-5.566.849.524 1.697.786 2.546.786 0 0 .849-.087 1.414-.262C21.012 14.283 24 14.805 24 14.805z"/>
+          <svg
+            class="w-5 h-5 mr-3"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.162 4.203 2.969 5.522l-.666 2.012 2.343-1.211c.849.173 1.714.262 2.045.262 5.099 0 8.691-3.513 8.691-7.849 0-4.336-3.592-7.849-8.691-7.849M8.8 14.109c-.474 0-.995-.262-1.723-.262-.891 0-1.783.262-2.674.262-3.067 0-5.741-1.97-5.741-4.729 0-2.759 2.674-4.729 5.741-4.729.891 0 1.783.262 2.674.262.728 0 1.249-.262 1.723-.262 3.067 0 5.741 1.97 5.741 4.729s-2.674 4.729-5.741 4.729M24 14.805c0 3.513-3.022 6.365-6.764 6.365-.849 0-1.697-.087-2.546-.262L12 22.119l-.69-1.211C9.617 20.82 8.191 19.88 7.342 18.648c3.67-.349 6.764-2.677 7.613-5.566.849.524 1.697.786 2.546.786 0 0 .849-.087 1.414-.262C21.012 14.283 24 14.805 24 14.805z" />
           </svg>
           微信登录（即将开放）
         </button>
       </div>
 
       <!-- 手机号登录面板 -->
-      <div v-if="showPhoneLogin" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <h3 class="text-sm font-medium text-blue-800 mb-3">手机号验证码登录</h3>
+      <div
+        v-if="showPhoneLogin"
+        class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
+      >
+        <h3 class="text-sm font-medium text-blue-800 mb-3">
+          手机号验证码登录
+        </h3>
         
         <!-- 发送验证码 -->
-        <div v-if="!otpSent" class="space-y-3">
+        <div
+          v-if="!otpSent"
+          class="space-y-3"
+        >
           <div class="relative">
             <input
               v-model="phone"
-              @input="handlePhoneInput"
               type="tel"
               placeholder="请输入手机号"
               class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <div v-if="phoneRegion" class="absolute right-3 top-3 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+              @input="handlePhoneInput"
+            >
+            <div
+              v-if="phoneRegion"
+              class="absolute right-3 top-3 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded"
+            >
               {{ phoneRegion }}
             </div>
           </div>
@@ -66,35 +104,40 @@
             支持格式：13800138000 或 +86 13800138000
           </div>
           <button
-            @click="sendOTP"
             :disabled="phoneLoading || !phone || !isValidPhone"
             class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50"
+            @click="sendOTP"
           >
             {{ phoneLoading ? '发送中...' : '发送验证码' }}
           </button>
         </div>
 
         <!-- 输入验证码 -->
-        <div v-else class="space-y-3">
-          <p class="text-sm text-blue-600">验证码已发送至 {{ displayPhone }}</p>
+        <div
+          v-else
+          class="space-y-3"
+        >
+          <p class="text-sm text-blue-600">
+            验证码已发送至 {{ displayPhone }}
+          </p>
           <input
             v-model="otp"
             type="text"
             placeholder="请输入6位验证码"
             maxlength="6"
             class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          >
           <div class="flex space-x-2">
             <button
-              @click="verifyOTP"
               :disabled="phoneLoading || !otp || otp.length !== 6"
               class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50"
+              @click="verifyOTP"
             >
               {{ phoneLoading ? '验证中...' : '登录' }}
             </button>
             <button
-              @click="resetPhoneLogin"
               class="px-4 py-3 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50"
+              @click="resetPhoneLogin"
             >
               重新发送
             </button>
@@ -103,9 +146,12 @@
       </div>
 
       <!-- 分割线 -->
-      <div v-if="!showPhoneLogin" class="relative mb-6">
+      <div
+        v-if="!showPhoneLogin"
+        class="relative mb-6"
+      >
         <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-300"></div>
+          <div class="w-full border-t border-gray-300" />
         </div>
         <div class="relative flex justify-center text-sm">
           <span class="px-2 bg-white text-gray-500">或使用邮箱登录</span>
@@ -113,7 +159,11 @@
       </div>
 
       <!-- 邮箱登录表单 -->
-      <form v-if="!showPhoneLogin" @submit.prevent="handleEmailLogin" class="space-y-4">
+      <form
+        v-if="!showPhoneLogin"
+        class="space-y-4"
+        @submit.prevent="handleEmailLogin"
+      >
         <div>
           <input
             v-model="email"
@@ -121,7 +171,7 @@
             placeholder="邮箱地址"
             required
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          >
         </div>
         <div>
           <input
@@ -130,7 +180,7 @@
             placeholder="密码"
             required
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          >
         </div>
         <button
           type="submit"
@@ -142,17 +192,26 @@
       </form>
 
       <!-- 错误提示 -->
-      <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+      <div
+        v-if="error"
+        class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+      >
         {{ error }}
       </div>
 
       <!-- 底部链接 -->
       <div class="mt-6 text-center space-y-2">
-        <router-link to="/auth/register" class="text-blue-500 hover:text-blue-600">
+        <router-link
+          to="/auth/register"
+          class="text-blue-500 hover:text-blue-600"
+        >
           还没有账户？立即注册
         </router-link>
         <br>
-        <router-link to="/auth/forgot-password" class="text-gray-500 hover:text-gray-600 text-sm">
+        <router-link
+          to="/auth/forgot-password"
+          class="text-gray-500 hover:text-gray-600 text-sm"
+        >
           忘记密码？
         </router-link>
       </div>

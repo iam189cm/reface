@@ -16,8 +16,8 @@
       <div class="grid grid-cols-1 gap-3">
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-pink-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="colorizeStyle"
+            type="radio"
             value="natural"
             class="text-pink-600 focus:ring-pink-500 mr-3"
           >
@@ -32,8 +32,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-pink-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="colorizeStyle"
+            type="radio"
             value="vivid"
             class="text-pink-600 focus:ring-pink-500 mr-3"
           >
@@ -45,8 +45,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-pink-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="colorizeStyle"
+            type="radio"
             value="vintage"
             class="text-pink-600 focus:ring-pink-500 mr-3"
           >
@@ -65,8 +65,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="colorIntensity"
+          type="range"
           min="30"
           max="100"
           step="5"
@@ -89,8 +89,8 @@
       <div class="space-y-2">
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="enhanceSkin"
+            type="checkbox"
             class="rounded border-gray-300 text-pink-600 shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">肤色增强</span>
@@ -99,8 +99,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="enhanceSky"
+            type="checkbox"
             class="rounded border-gray-300 text-pink-600 shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">天空增强</span>
@@ -109,8 +109,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="enhanceGreen"
+            type="checkbox"
             class="rounded border-gray-300 text-pink-600 shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">植物增强</span>
@@ -128,15 +128,23 @@
         block
         @click="handleColorizePhoto"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">🎨</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日黑白上色次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日黑白上色次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -157,8 +165,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-pink-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-pink-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -171,18 +189,29 @@
       
       <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
         <div class="p-2 bg-white/60 rounded border border-pink-200">
-          <div class="font-medium text-pink-700 mb-1">✨ 最佳效果:</div>
-          <div class="text-gray-600">清晰的黑白老照片</div>
+          <div class="font-medium text-pink-700 mb-1">
+            ✨ 最佳效果:
+          </div>
+          <div class="text-gray-600">
+            清晰的黑白老照片
+          </div>
         </div>
         <div class="p-2 bg-white/60 rounded border border-pink-200">
-          <div class="font-medium text-pink-700 mb-1">⏱️ 处理时间:</div>
-          <div class="text-gray-600">约 45-60 秒</div>
+          <div class="font-medium text-pink-700 mb-1">
+            ⏱️ 处理时间:
+          </div>
+          <div class="text-gray-600">
+            约 45-60 秒
+          </div>
         </div>
       </div>
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

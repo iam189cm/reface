@@ -3,9 +3,16 @@
     <div class="text-center">
       <Loading :message="message" />
       <div class="mt-8 max-w-md mx-auto">
-        <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-          <h3 class="font-semibold mb-2">登录失败</h3>
-          <p class="text-sm">{{ error }}</p>
+        <div
+          v-if="error"
+          class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+        >
+          <h3 class="font-semibold mb-2">
+            登录失败
+          </h3>
+          <p class="text-sm">
+            {{ error }}
+          </p>
           <router-link 
             to="/auth/login"
             class="mt-4 inline-block px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"

@@ -16,6 +16,14 @@ import Pricing from './views/Pricing.vue'
 import Help from './views/Help.vue'
 import Solutions from './views/Solutions.vue'
 import Showcase from './views/Showcase.vue'
+// 性能优化工具
+import { initPerformanceOptimizations, createAsyncComponent } from './utils/performance.js'
+
+// 解决方案页面使用动态导入
+const PersonalUser = createAsyncComponent(() => import('./pages/SolutionPages/PersonalUser.vue'))
+const ContentCreator = createAsyncComponent(() => import('./pages/SolutionPages/ContentCreator.vue'))
+const EcommerceSeller = createAsyncComponent(() => import('./pages/SolutionPages/EcommerceSeller.vue'))
+const Designer = createAsyncComponent(() => import('./pages/SolutionPages/Designer.vue'))
 
 const routes = [
   { path: '/', name: 'home', component: Home },
@@ -24,10 +32,40 @@ const routes = [
   { path: '/showcase', name: 'showcase', component: Showcase },
   { path: '/pricing', name: 'pricing', component: Pricing },
   { path: '/help', name: 'help', component: Help },
+  
+  // 解决方案页面路由
+  { 
+    path: '/solutions/personal', 
+    name: 'solutions-personal', 
+    component: PersonalUser,
+    meta: { title: '个人用户解决方案' }
+  },
+  { 
+    path: '/solutions/content-creator', 
+    name: 'solutions-content-creator', 
+    component: ContentCreator,
+    meta: { title: '内容创作者解决方案' }
+  },
+  { 
+    path: '/solutions/ecommerce', 
+    name: 'solutions-ecommerce', 
+    component: EcommerceSeller,
+    meta: { title: '电商卖家解决方案' }
+  },
+  { 
+    path: '/solutions/designer', 
+    name: 'solutions-designer', 
+    component: Designer,
+    meta: { title: '设计师解决方案' }
+  },
+  
+  // 认证路由
   { path: '/auth/login', name: 'login', component: Login },
   { path: '/auth/register', name: 'register', component: Register },
   { path: '/auth/callback', name: 'auth-callback', component: Callback },
   { path: '/auth/forgot-password', name: 'forgot-password', component: ForgotPassword },
+  
+  // 管理员路由
   { 
     path: '/admin', 
     name: 'admin', 
@@ -77,5 +115,8 @@ app.use(i18n)
 
 // 设置i18n实例给通知系统
 setI18nInstance(i18n)
+
+// 初始化性能优化
+initPerformanceOptimizations()
 
 app.mount('#app')

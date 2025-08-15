@@ -4,7 +4,10 @@
     <EmptyImagePrompt v-if="!hasImage" />
 
     <!-- 编辑界面 -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+    <div
+      v-else
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+    >
       <!-- 图片预览区域 - 居中 -->
       <div class="col-span-1 md:col-span-1 lg:col-span-2 lg:order-1 order-1">
         <ImageCanvas 
@@ -18,8 +21,12 @@
         <!-- AI功能选择器 -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            <svg
+              class="w-5 h-5 mr-2 text-pink-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
             选择AI功能
           </h3>
@@ -34,7 +41,10 @@
         </div>
 
         <!-- AI参数调节面板 -->
-        <div v-if="selectedService" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div
+          v-if="selectedService"
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
+        >
           <AIParameterPanel
             :service-type="selectedService"
             :initial-parameters="serviceParameters"
@@ -44,7 +54,10 @@
         </div>
 
         <!-- 动态AI功能组件 -->
-        <div v-if="selectedService" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div
+          v-if="selectedService"
+          class="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
+        >
           <component
             :is="currentServiceComponent"
             :image-file="originalImageFile"
@@ -57,7 +70,9 @@
         <!-- 批量处理入口 -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <div class="flex items-center justify-between mb-3">
-            <h4 class="text-sm font-semibold text-gray-800">批量处理</h4>
+            <h4 class="text-sm font-semibold text-gray-800">
+              批量处理
+            </h4>
             <Button
               type="secondary"
               size="small"
@@ -66,13 +81,17 @@
               打开
             </Button>
           </div>
-          <p class="text-xs text-gray-600">同时处理多张图片，提升效率</p>
+          <p class="text-xs text-gray-600">
+            同时处理多张图片，提升效率
+          </p>
         </div>
 
         <!-- 处理结果管理 -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
           <div class="flex items-center justify-between mb-3">
-            <h4 class="text-sm font-semibold text-gray-800">处理结果</h4>
+            <h4 class="text-sm font-semibold text-gray-800">
+              处理结果
+            </h4>
             <Button
               type="secondary"
               size="small"
@@ -81,7 +100,9 @@
               查看
             </Button>
           </div>
-          <p class="text-xs text-gray-600">管理和下载AI处理结果</p>
+          <p class="text-xs text-gray-600">
+            管理和下载AI处理结果
+          </p>
         </div>
       </div>
     </div>

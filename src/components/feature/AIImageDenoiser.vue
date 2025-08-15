@@ -17,8 +17,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="denoiseLevel"
+          type="range"
           min="1"
           max="10"
           step="1"
@@ -41,8 +41,8 @@
       <div class="grid grid-cols-2 gap-3">
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-green-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="noiseType"
+            type="radio"
             value="general"
             class="text-green-600 focus:ring-green-500 mr-3"
           >
@@ -53,8 +53,8 @@
         </label>
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-green-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="noiseType"
+            type="radio"
             value="photo"
             class="text-green-600 focus:ring-green-500 mr-3"
           >
@@ -74,8 +74,8 @@
           type="secondary"
           size="small"
           block
-          @click="applyPreset('light')"
           :class="{ 'bg-green-100 border-green-300': currentPreset === 'light' }"
+          @click="applyPreset('light')"
         >
           <div class="flex items-center justify-between w-full">
             <span>轻度降噪</span>
@@ -86,8 +86,8 @@
           type="secondary"
           size="small"
           block
-          @click="applyPreset('standard')"
           :class="{ 'bg-green-100 border-green-300': currentPreset === 'standard' }"
+          @click="applyPreset('standard')"
         >
           <div class="flex items-center justify-between w-full">
             <span>标准降噪</span>
@@ -98,8 +98,8 @@
           type="secondary"
           size="small"
           block
-          @click="applyPreset('strong')"
           :class="{ 'bg-green-100 border-green-300': currentPreset === 'strong' }"
+          @click="applyPreset('strong')"
         >
           <div class="flex items-center justify-between w-full">
             <span>强力降噪</span>
@@ -118,15 +118,23 @@
         block
         @click="handleImageDenoise"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">✨</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日图像降噪次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日图像降噪次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -140,8 +148,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-green-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -154,7 +172,10 @@
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

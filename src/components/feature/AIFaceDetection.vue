@@ -16,8 +16,8 @@
       <div class="space-y-2">
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="detectFaces"
+            type="checkbox"
             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">面部位置</span>
@@ -26,8 +26,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="detectLandmarks"
+            type="checkbox"
             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">面部特征点</span>
@@ -36,8 +36,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="detectAttributes"
+            type="checkbox"
             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">面部属性</span>
@@ -46,8 +46,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="detectEmotions"
+            type="checkbox"
             class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">情绪分析</span>
@@ -63,24 +63,24 @@
         <Button
           type="secondary"
           size="small"
-          @click="setAccuracy('fast')"
           :class="{ 'bg-blue-100 border-blue-300': accuracy === 'fast' }"
+          @click="setAccuracy('fast')"
         >
           快速
         </Button>
         <Button
           type="secondary"
           size="small"
-          @click="setAccuracy('balanced')"
           :class="{ 'bg-blue-100 border-blue-300': accuracy === 'balanced' }"
+          @click="setAccuracy('balanced')"
         >
           平衡
         </Button>
         <Button
           type="secondary"
           size="small"
-          @click="setAccuracy('accurate')"
           :class="{ 'bg-blue-100 border-blue-300': accuracy === 'accurate' }"
+          @click="setAccuracy('accurate')"
         >
           精确
         </Button>
@@ -96,8 +96,8 @@
       <div class="space-y-2">
         <label class="flex items-center">
           <input
-            type="radio"
             v-model="outputFormat"
+            type="radio"
             value="visual"
             class="text-blue-600 focus:ring-blue-500"
           >
@@ -106,8 +106,8 @@
         </label>
         <label class="flex items-center">
           <input
-            type="radio"
             v-model="outputFormat"
+            type="radio"
             value="json"
             class="text-blue-600 focus:ring-blue-500"
           >
@@ -116,8 +116,8 @@
         </label>
         <label class="flex items-center">
           <input
-            type="radio"
             v-model="outputFormat"
+            type="radio"
             value="both"
             class="text-blue-600 focus:ring-blue-500"
           >
@@ -136,15 +136,23 @@
         block
         @click="handleFaceDetection"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">👁️</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日人脸检测次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日人脸检测次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -163,28 +171,54 @@
     </div>
 
     <!-- 检测结果展示 -->
-    <div v-if="detectionResult" class="mt-6 p-4 bg-blue-50 rounded-lg">
+    <div
+      v-if="detectionResult"
+      class="mt-6 p-4 bg-blue-50 rounded-lg"
+    >
       <h4 class="text-sm font-medium text-gray-900 mb-3 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-blue-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
         </svg>
         检测结果
       </h4>
       
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div class="text-center p-2 bg-white/60 rounded">
-          <div class="text-xl font-bold text-blue-600">{{ detectionResult.faceCount || 0 }}</div>
-          <div class="text-xs text-gray-600">检测到的人脸</div>
+          <div class="text-xl font-bold text-blue-600">
+            {{ detectionResult.faceCount || 0 }}
+          </div>
+          <div class="text-xs text-gray-600">
+            检测到的人脸
+          </div>
         </div>
         <div class="text-center p-2 bg-white/60 rounded">
-          <div class="text-xl font-bold text-green-600">{{ detectionResult.confidence || 0 }}%</div>
-          <div class="text-xs text-gray-600">平均置信度</div>
+          <div class="text-xl font-bold text-green-600">
+            {{ detectionResult.confidence || 0 }}%
+          </div>
+          <div class="text-xs text-gray-600">
+            平均置信度
+          </div>
         </div>
       </div>
       
       <!-- 详细信息 -->
-      <div v-if="detectionResult.faces && detectionResult.faces.length > 0" class="mt-3">
-        <div class="text-xs font-medium text-gray-700 mb-2">人脸详情:</div>
+      <div
+        v-if="detectionResult.faces && detectionResult.faces.length > 0"
+        class="mt-3"
+      >
+        <div class="text-xs font-medium text-gray-700 mb-2">
+          人脸详情:
+        </div>
         <div class="space-y-2 max-h-32 overflow-y-auto">
           <div 
             v-for="(face, index) in detectionResult.faces" 
@@ -195,7 +229,10 @@
               <span class="font-medium">人脸 {{ index + 1 }}</span>
               <span class="text-blue-600">{{ face.confidence }}% 置信度</span>
             </div>
-            <div v-if="face.attributes" class="mt-1 text-gray-600">
+            <div
+              v-if="face.attributes"
+              class="mt-1 text-gray-600"
+            >
               <span v-if="face.attributes.age">年龄: ~{{ face.attributes.age }}岁 </span>
               <span v-if="face.attributes.gender">性别: {{ face.attributes.gender }} </span>
               <span v-if="face.attributes.emotion">表情: {{ face.attributes.emotion }}</span>
@@ -208,8 +245,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-blue-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-blue-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -222,7 +269,10 @@
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

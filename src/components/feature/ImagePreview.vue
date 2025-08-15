@@ -1,6 +1,8 @@
 <template>
   <div class="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl p-8 border border-pink-100">
-    <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">图片预览</h3>
+    <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">
+      图片预览
+    </h3>
     
     <div class="flex flex-col lg:flex-row gap-8 items-center">
       <!-- 预览图片 -->
@@ -14,7 +16,9 @@
             @error="onImageError"
           >
         </div>
-        <p class="text-sm text-gray-600 mt-3 text-center">{{ imageName }}</p>
+        <p class="text-sm text-gray-600 mt-3 text-center">
+          {{ imageName }}
+        </p>
       </div>
       
       <!-- 图片信息和操作 -->

@@ -1,24 +1,33 @@
 <template>
   <div class="ai-service-selector">
     <!-- 当前选择的服务 -->
-    <div v-if="selectedService" class="mb-6">
+    <div
+      v-if="selectedService"
+      class="mb-6"
+    >
       <div class="glass-effect rounded-2xl p-4 border-2 border-pink-200 bg-gradient-to-r from-pink-50 to-purple-50">
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-3"
-                 :class="getCategoryGradient(getServiceCategory(selectedService))">
+            <div
+              class="w-10 h-10 rounded-xl flex items-center justify-center mr-3"
+              :class="getCategoryGradient(getServiceCategory(selectedService))"
+            >
               <span class="text-xl">{{ getServiceIcon(selectedService) }}</span>
             </div>
             <div>
-              <h3 class="font-semibold text-gray-900">{{ getServiceInfo(selectedService)?.name }}</h3>
-              <p class="text-sm text-gray-600">{{ getServiceInfo(selectedService)?.description }}</p>
+              <h3 class="font-semibold text-gray-900">
+                {{ getServiceInfo(selectedService)?.name }}
+              </h3>
+              <p class="text-sm text-gray-600">
+                {{ getServiceInfo(selectedService)?.description }}
+              </p>
             </div>
           </div>
           <Button 
             type="secondary" 
             size="small" 
-            @click="clearSelection"
             class="text-gray-500 hover:text-gray-700"
+            @click="clearSelection"
           >
             更换功能
           </Button>
@@ -27,16 +36,28 @@
     </div>
 
     <!-- 服务分类选择 -->
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <!-- 智能推荐 -->
-      <div v-if="recommendations.length > 0" class="mb-8">
+      <div
+        v-if="recommendations.length > 0"
+        class="mb-8"
+      >
         <div class="flex items-center mb-4">
           <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center mr-3">
-            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            <svg
+              class="w-4 h-4 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           </div>
-          <h3 class="text-lg font-semibold text-gray-900">为你推荐</h3>
+          <h3 class="text-lg font-semibold text-gray-900">
+            为你推荐
+          </h3>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           <ServiceCard 
@@ -48,7 +69,9 @@
           />
         </div>
         <div class="border-t border-gray-200 pt-6">
-          <p class="text-center text-sm text-gray-500 mb-4">或选择其他功能</p>
+          <p class="text-center text-sm text-gray-500 mb-4">
+            或选择其他功能
+          </p>
         </div>
       </div>
 

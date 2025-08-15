@@ -17,8 +17,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="fidelity"
+          type="range"
           min="0.1"
           max="1.0"
           step="0.1"
@@ -42,24 +42,24 @@
         <Button
           type="secondary"
           size="small"
-          @click="setFidelity(0.3)"
           :class="{ 'bg-purple-100 border-purple-300': Math.abs(fidelity - 0.3) < 0.05 }"
+          @click="setFidelity(0.3)"
         >
           轻度
         </Button>
         <Button
           type="secondary" 
           size="small"
-          @click="setFidelity(0.7)"
           :class="{ 'bg-purple-100 border-purple-300': Math.abs(fidelity - 0.7) < 0.05 }"
+          @click="setFidelity(0.7)"
         >
           标准
         </Button>
         <Button
           type="secondary"
           size="small" 
-          @click="setFidelity(0.9)"
           :class="{ 'bg-purple-100 border-purple-300': Math.abs(fidelity - 0.9) < 0.05 }"
+          @click="setFidelity(0.9)"
         >
           重度
         </Button>
@@ -75,15 +75,23 @@
         block
         @click="handleFaceRestoration"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">😊</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日面部修复次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日面部修复次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -97,8 +105,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-purple-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-purple-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -111,7 +129,10 @@
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

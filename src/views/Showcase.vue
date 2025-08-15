@@ -4,8 +4,18 @@
     <div class="max-w-7xl mx-auto px-4 py-16">
       <div class="text-center mb-20">
         <div class="inline-flex items-center bg-gradient-to-r from-green-100 to-blue-100 rounded-full px-4 py-2 mb-6">
-          <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          <svg
+            class="w-4 h-4 mr-2 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
           </svg>
           <span class="text-sm font-medium text-gray-700">真实案例展示</span>
         </div>
@@ -22,57 +32,57 @@
         <!-- 分类筛选 -->
         <div class="flex flex-wrap justify-center gap-3 mb-16">
           <button 
-            @click="activeCategory = 'all'" 
             :class="[
               'px-6 py-3 rounded-full font-medium transition-all duration-200',
               activeCategory === 'all' 
                 ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            ]"
+            ]" 
+            @click="activeCategory = 'all'"
           >
             全部案例
           </button>
           <button 
-            @click="activeCategory = 'portrait'" 
             :class="[
               'px-6 py-3 rounded-full font-medium transition-all duration-200',
               activeCategory === 'portrait' 
                 ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            ]"
+            ]" 
+            @click="activeCategory = 'portrait'"
           >
             👩‍💼 人像处理
           </button>
           <button 
-            @click="activeCategory = 'product'" 
             :class="[
               'px-6 py-3 rounded-full font-medium transition-all duration-200',
               activeCategory === 'product' 
                 ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            ]"
+            ]" 
+            @click="activeCategory = 'product'"
           >
             🛍️ 产品图片
           </button>
           <button 
-            @click="activeCategory = 'creative'" 
             :class="[
               'px-6 py-3 rounded-full font-medium transition-all duration-200',
               activeCategory === 'creative' 
                 ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            ]"
+            ]" 
+            @click="activeCategory = 'creative'"
           >
             🎨 创意设计
           </button>
           <button 
-            @click="activeCategory = 'enlarge'" 
             :class="[
               'px-6 py-3 rounded-full font-medium transition-all duration-200',
               activeCategory === 'enlarge' 
                 ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            ]"
+            ]" 
+            @click="activeCategory = 'enlarge'"
           >
             📈 图片放大
           </button>
@@ -122,13 +132,15 @@
             </div>
             
             <!-- 分隔线 -->
-            <div class="absolute top-0 left-1/2 w-0.5 h-full bg-white/50 transform -translate-x-0.5"></div>
+            <div class="absolute top-0 left-1/2 w-0.5 h-full bg-white/50 transform -translate-x-0.5" />
           </div>
 
           <!-- 案例信息 -->
           <div class="p-6">
             <div class="flex items-center justify-between mb-3">
-              <h3 class="font-bold text-gray-900">{{ case_item.title }}</h3>
+              <h3 class="font-bold text-gray-900">
+                {{ case_item.title }}
+              </h3>
               <div class="flex items-center space-x-1">
                 <span 
                   v-for="star in 5" 
@@ -140,7 +152,9 @@
               </div>
             </div>
             
-            <p class="text-gray-600 text-sm mb-4">{{ case_item.description }}</p>
+            <p class="text-gray-600 text-sm mb-4">
+              {{ case_item.description }}
+            </p>
             
             <div class="flex items-center justify-between text-xs text-gray-500">
               <span>{{ case_item.category_name }}</span>
@@ -156,49 +170,109 @@
       <!-- 统计数据 -->
       <div class="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-12 mb-20">
         <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">处理效果统计</h2>
-          <p class="text-gray-600">基于真实用户反馈的数据统计</p>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            处理效果统计
+          </h2>
+          <p class="text-gray-600">
+            基于真实用户反馈的数据统计
+          </p>
         </div>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div class="text-center">
             <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <svg
+                class="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <div class="text-3xl font-bold gradient-text mb-2">99.2%</div>
-            <div class="text-sm text-gray-600">背景移除准确率</div>
+            <div class="text-3xl font-bold gradient-text mb-2">
+              99.2%
+            </div>
+            <div class="text-sm text-gray-600">
+              背景移除准确率
+            </div>
           </div>
           
           <div class="text-center">
             <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              <svg
+                class="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
               </svg>
             </div>
-            <div class="text-3xl font-bold gradient-text mb-2">8倍</div>
-            <div class="text-sm text-gray-600">最高放大倍数</div>
+            <div class="text-3xl font-bold gradient-text mb-2">
+              8倍
+            </div>
+            <div class="text-sm text-gray-600">
+              最高放大倍数
+            </div>
           </div>
           
           <div class="text-center">
             <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <svg
+                class="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <div class="text-3xl font-bold gradient-text mb-2">30秒</div>
-            <div class="text-sm text-gray-600">平均处理时间</div>
+            <div class="text-3xl font-bold gradient-text mb-2">
+              30秒
+            </div>
+            <div class="text-sm text-gray-600">
+              平均处理时间
+            </div>
           </div>
           
           <div class="text-center">
             <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              <svg
+                class="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
               </svg>
             </div>
-            <div class="text-3xl font-bold gradient-text mb-2">4.9/5</div>
-            <div class="text-sm text-gray-600">用户满意度</div>
+            <div class="text-3xl font-bold gradient-text mb-2">
+              4.9/5
+            </div>
+            <div class="text-sm text-gray-600">
+              用户满意度
+            </div>
           </div>
         </div>
       </div>
@@ -206,8 +280,12 @@
       <!-- 用户评价 -->
       <div class="mb-20">
         <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">用户真实评价</h2>
-          <p class="text-gray-600">来看看用户们怎么说</p>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            用户真实评价
+          </h2>
+          <p class="text-gray-600">
+            来看看用户们怎么说
+          </p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -217,8 +295,12 @@
                 <span class="text-white font-bold">李</span>
               </div>
               <div>
-                <h4 class="font-semibold text-gray-900">李小姐</h4>
-                <p class="text-sm text-gray-500">内容创作者</p>
+                <h4 class="font-semibold text-gray-900">
+                  李小姐
+                </h4>
+                <p class="text-sm text-gray-500">
+                  内容创作者
+                </p>
               </div>
             </div>
             <div class="flex mb-3">
@@ -235,8 +317,12 @@
                 <span class="text-white font-bold">张</span>
               </div>
               <div>
-                <h4 class="font-semibold text-gray-900">张先生</h4>
-                <p class="text-sm text-gray-500">电商店主</p>
+                <h4 class="font-semibold text-gray-900">
+                  张先生
+                </h4>
+                <p class="text-sm text-gray-500">
+                  电商店主
+                </p>
               </div>
             </div>
             <div class="flex mb-3">
@@ -253,8 +339,12 @@
                 <span class="text-white font-bold">王</span>
               </div>
               <div>
-                <h4 class="font-semibold text-gray-900">王女士</h4>
-                <p class="text-sm text-gray-500">设计师</p>
+                <h4 class="font-semibold text-gray-900">
+                  王女士
+                </h4>
+                <p class="text-sm text-gray-500">
+                  设计师
+                </p>
               </div>
             </div>
             <div class="flex mb-3">
@@ -270,7 +360,9 @@
       <!-- CTA区域 -->
       <div class="text-center">
         <div class="bg-gradient-to-r from-green-500 to-blue-600 rounded-3xl p-12 text-white">
-          <h2 class="text-3xl font-bold mb-4">想要同样的效果？</h2>
+          <h2 class="text-3xl font-bold mb-4">
+            想要同样的效果？
+          </h2>
           <p class="text-green-100 mb-8 max-w-2xl mx-auto">
             立即开始免费试用，体验AI图片处理的神奇效果。无需注册，每天3次免费机会。
           </p>
@@ -295,20 +387,34 @@
       <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-8">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">{{ selectedCase.title }}</h2>
+            <h2 class="text-2xl font-bold text-gray-900">
+              {{ selectedCase.title }}
+            </h2>
             <button 
-              @click="closeModal"
               class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+              @click="closeModal"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
             <div>
-              <h3 class="font-semibold text-gray-900 mb-3">处理前</h3>
+              <h3 class="font-semibold text-gray-900 mb-3">
+                处理前
+              </h3>
               <div class="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
                 <div 
                   class="w-full h-full flex items-center justify-center"
@@ -320,7 +426,9 @@
             </div>
             
             <div>
-              <h3 class="font-semibold text-gray-900 mb-3">处理后</h3>
+              <h3 class="font-semibold text-gray-900 mb-3">
+                处理后
+              </h3>
               <div class="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center">
                 <div 
                   class="w-full h-full flex items-center justify-center"
@@ -334,8 +442,12 @@
           
           <div class="space-y-4">
             <div>
-              <h4 class="font-semibold text-gray-900 mb-2">处理详情</h4>
-              <p class="text-gray-600">{{ selectedCase.fullDescription }}</p>
+              <h4 class="font-semibold text-gray-900 mb-2">
+                处理详情
+              </h4>
+              <p class="text-gray-600">
+                {{ selectedCase.fullDescription }}
+              </p>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

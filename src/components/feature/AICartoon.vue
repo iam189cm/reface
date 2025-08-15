@@ -16,8 +16,8 @@
       <div class="grid grid-cols-1 gap-3">
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="cartoonStyle"
+            type="radio"
             value="anime"
             class="text-purple-600 focus:ring-purple-500 mr-3"
           >
@@ -32,8 +32,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="cartoonStyle"
+            type="radio"
             value="disney"
             class="text-purple-600 focus:ring-purple-500 mr-3"
           >
@@ -45,8 +45,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="cartoonStyle"
+            type="radio"
             value="sketch"
             class="text-purple-600 focus:ring-purple-500 mr-3"
           >
@@ -58,8 +58,8 @@
         
         <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-purple-300 transition-colors cursor-pointer">
           <input
-            type="radio"
             v-model="cartoonStyle"
+            type="radio"
             value="comic"
             class="text-purple-600 focus:ring-purple-500 mr-3"
           >
@@ -78,8 +78,8 @@
       </label>
       <div class="space-y-3">
         <input
-          type="range"
           v-model="cartoonIntensity"
+          type="range"
           min="20"
           max="100"
           step="10"
@@ -99,8 +99,8 @@
       <div class="space-y-2">
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="enhanceColors"
+            type="checkbox"
             class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">增强色彩饱和度</span>
@@ -109,8 +109,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="smoothSkin"
+            type="checkbox"
             class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">肌肤平滑</span>
@@ -119,8 +119,8 @@
         
         <label class="flex items-center">
           <input
-            type="checkbox"
             v-model="preserveDetails"
+            type="checkbox"
             class="rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
           >
           <span class="ml-2 text-sm text-gray-700">保留细节</span>
@@ -138,15 +138,23 @@
         block
         @click="handleCartoonize"
       >
-        <template #icon v-if="!isProcessing">
+        <template
+          v-if="!isProcessing"
+          #icon
+        >
           <span class="text-sm">🎭</span>
         </template>
         {{ buttonText }}
       </Button>
 
       <!-- 升级提示 -->
-      <div v-if="!canUseTrial" class="text-center">
-        <p class="text-sm text-gray-600 mb-2">今日卡通化次数已用完</p>
+      <div
+        v-if="!canUseTrial"
+        class="text-center"
+      >
+        <p class="text-sm text-gray-600 mb-2">
+          今日卡通化次数已用完
+        </p>
         <Button
           type="warning"
           size="small"
@@ -160,8 +168,18 @@
     <!-- 功能说明 -->
     <div class="mt-6 p-4 bg-purple-50 rounded-lg">
       <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
-        <svg class="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          class="w-4 h-4 mr-2 text-purple-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         功能介绍
       </h4>
@@ -174,7 +192,10 @@
     </div>
 
     <!-- 升级弹窗 -->
-    <UpgradeModal v-if="showUpgradeModal" @close="showUpgradeModal = false" />
+    <UpgradeModal
+      v-if="showUpgradeModal"
+      @close="showUpgradeModal = false"
+    />
   </div>
 </template>
 

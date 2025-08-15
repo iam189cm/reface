@@ -1,19 +1,31 @@
 <template>
   <!-- 🆕 已登录用户：显示服务端配额信息 -->
-  <div v-if="trialInfo.isAuthenticated" class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+  <div
+    v-if="trialInfo.isAuthenticated"
+    class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+  >
     <!-- 用户类型标识 -->
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center space-x-2">
         <div class="flex items-center space-x-1">
-          <div :class="userTypeBadgeClass" class="px-2 py-1 rounded-full text-xs font-medium">
+          <div
+            :class="userTypeBadgeClass"
+            class="px-2 py-1 rounded-full text-xs font-medium"
+          >
             {{ userTypeDisplayName }}
           </div>
-          <div v-if="trialInfo.userType === 'free'" class="text-xs text-gray-500">
+          <div
+            v-if="trialInfo.userType === 'free'"
+            class="text-xs text-gray-500"
+          >
             (登录用户)
           </div>
         </div>
       </div>
-      <span class="text-sm font-semibold" :class="statusTextClass">
+      <span
+        class="text-sm font-semibold"
+        :class="statusTextClass"
+      >
         {{ trialInfo.remaining }}/{{ trialInfo.total }} 配额
       </span>
     </div>
@@ -24,7 +36,7 @@
         class="h-3 rounded-full transition-all duration-500"
         :class="progressBarClass"
         :style="{ width: `${Math.max(5, (trialInfo.remaining / trialInfo.total) * 100)}%` }"
-      ></div>
+      />
     </div>
     
     <!-- 配额状态信息 -->
@@ -36,23 +48,39 @@
       
       <!-- 状态提示 -->
       <div class="flex items-start space-x-2">
-        <div :class="statusIconClass" class="w-4 h-4 rounded-full flex-shrink-0 mt-0.5"></div>
-        <p class="text-xs" :class="statusTextClass">
+        <div
+          :class="statusIconClass"
+          class="w-4 h-4 rounded-full flex-shrink-0 mt-0.5"
+        />
+        <p
+          class="text-xs"
+          :class="statusTextClass"
+        >
           {{ authenticatedStatusText }}
         </p>
       </div>
       
       <!-- 升级建议 -->
-      <div v-if="upgradeRecommendation" class="mt-3 p-2 bg-white bg-opacity-60 rounded-lg">
+      <div
+        v-if="upgradeRecommendation"
+        class="mt-3 p-2 bg-white bg-opacity-60 rounded-lg"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium" :class="upgradeRecommendation.urgent ? 'text-red-700' : 'text-amber-700'">
+            <p
+              class="text-xs font-medium"
+              :class="upgradeRecommendation.urgent ? 'text-red-700' : 'text-amber-700'"
+            >
               {{ upgradeRecommendation.title }}
             </p>
-            <p class="text-xs text-gray-600 mt-1">{{ upgradeRecommendation.message }}</p>
+            <p class="text-xs text-gray-600 mt-1">
+              {{ upgradeRecommendation.message }}
+            </p>
           </div>
-          <button class="text-xs px-2 py-1 rounded-lg font-medium transition-colors"
-                  :class="upgradeRecommendation.urgent ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'">
+          <button
+            class="text-xs px-2 py-1 rounded-lg font-medium transition-colors"
+            :class="upgradeRecommendation.urgent ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'"
+          >
             {{ upgradeRecommendation.action }}
           </button>
         </div>
@@ -60,10 +88,13 @@
     </div>
     
     <!-- 开发模式重置按钮 -->
-    <div v-if="isDevelopment" class="mt-3 pt-2 border-t border-blue-200">
+    <div
+      v-if="isDevelopment"
+      class="mt-3 pt-2 border-t border-blue-200"
+    >
       <button
-        @click="resetTrials"
         class="text-xs text-blue-600 hover:text-blue-800 underline"
+        @click="resetTrials"
       >
         重置配额 (开发模式)
       </button>
@@ -71,7 +102,10 @@
   </div>
 
   <!-- 🔄 未登录用户：显示本地试用信息 -->
-  <div v-else class="mb-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-100">
+  <div
+    v-else
+    class="mb-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-100"
+  >
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center space-x-2">
         <span class="text-sm font-medium text-gray-700">免费试用</span>
@@ -79,7 +113,10 @@
           访客模式
         </div>
       </div>
-      <span class="text-sm font-semibold" :class="guestStatusClass">
+      <span
+        class="text-sm font-semibold"
+        :class="guestStatusClass"
+      >
         {{ trialInfo.remaining }}/{{ trialInfo.total }} 次
       </span>
     </div>
@@ -89,13 +126,16 @@
       <div 
         class="bg-gradient-to-r from-pink-500 to-purple-600 h-3 rounded-full transition-all duration-300"
         :style="{ width: `${Math.max(5, (trialInfo.remaining / trialInfo.total) * 100)}%` }"
-      ></div>
+      />
     </div>
     
     <!-- 试用状态提示 -->
     <div class="space-y-2">
       <div class="flex items-start space-x-2">
-        <div :class="guestStatusIcon" class="w-4 h-4 rounded-full flex-shrink-0 mt-0.5"></div>
+        <div
+          :class="guestStatusIcon"
+          class="w-4 h-4 rounded-full flex-shrink-0 mt-0.5"
+        />
         <p class="text-xs text-gray-600">
           {{ guestStatusText }}
         </p>
@@ -105,8 +145,12 @@
       <div class="mt-3 p-2 bg-white bg-opacity-60 rounded-lg">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium text-purple-700">注册获取更多配额</p>
-            <p class="text-xs text-gray-600 mt-1">登录后可获得每日 {{ trialInfo.daily }} 个配额</p>
+            <p class="text-xs font-medium text-purple-700">
+              注册获取更多配额
+            </p>
+            <p class="text-xs text-gray-600 mt-1">
+              登录后可获得每日 {{ trialInfo.daily }} 个配额
+            </p>
           </div>
           <button class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium hover:bg-purple-200 transition-colors">
             立即注册
@@ -116,10 +160,13 @@
     </div>
     
     <!-- 开发模式重置按钮 -->
-    <div v-if="isDevelopment" class="mt-3 pt-2 border-t border-pink-200">
+    <div
+      v-if="isDevelopment"
+      class="mt-3 pt-2 border-t border-pink-200"
+    >
       <button
-        @click="resetTrials"
         class="text-xs text-pink-600 hover:text-pink-800 underline"
+        @click="resetTrials"
       >
         重置试用 (开发模式)
       </button>
